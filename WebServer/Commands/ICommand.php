@@ -15,8 +15,11 @@
 //  Includes                                                         //
 //===================================================================//
 include '../Generics.php';
+include '../DatabaseTools/dbClientConnection.php';
+include '../DatabaseTools/dbPanelConnection.php';
+
 interface ICommand {
-    
+
     //---------------------------------------------------------------//
     //  Interface Function Declerations                              //
     //---------------------------------------------------------------//

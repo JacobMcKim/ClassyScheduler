@@ -19,7 +19,7 @@
  */
 
 //===================================================================//
-class CodeStormCommander Implements IController {
+class RequestManager Implements IController {
 
     //----------------------------------------------------------------//
     //  Class Function Defintions                                     //

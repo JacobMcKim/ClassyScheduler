@@ -22,6 +22,7 @@
 //  Includes                                                         //
 //===================================================================//
 Include "controllers\RequestManager.php";
+require '/kint/Kint.class.php';
 
 //===================================================================//
 // Variables                                                         //
@@ -36,6 +37,8 @@ $inputData = Null;
 //===================================================================//
 // Main Routine                                                      //
 //===================================================================//
+
+Kint::dump( $_SERVER);
 
 // Construct the request manager.
 $rqManager = new RequestManager ();

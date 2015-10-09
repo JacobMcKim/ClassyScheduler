@@ -43,8 +43,8 @@ class RequestManager Implements IController {
 
                 // Parse for the right command to be displayed.
                 switch ( $requestData ["ServiceID"] ) {
-                    case "CreateAccount" : // Creates an account.
-                        $iCommand = new CreateAccount ($requestData);
+                    case "CreateCourse" : // Creates a course.
+                        $iCommand = new CreateCourse ($requestData);
                         break;
                     case "Login" : // Signs user in and creates a session.
                         $iCommand = new Login ($requestData);

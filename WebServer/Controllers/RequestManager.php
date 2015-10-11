@@ -43,32 +43,68 @@ class RequestManager Implements IController {
 
                 // Parse for the right command to be displayed.
                 switch ( $requestData ["ServiceID"] ) {
-                    case "CreateCourse" : // Creates a course.
-                        $iCommand = new CreateCourse ($requestData);
+                    case "AddMajorCommand" : // Creates a course.
+                        $iCommand = new AddMajorCommand ($requestData);
                         break;
-                    case "Login" : // Signs user in and creates a session.
-                        $iCommand = new Login ($requestData);
+                    case "DeleteMajorCommand" : // Signs user in and creates a session.
+                        $iCommand = new DeleteMajorCommand ($requestData);
                         break;
-                    case "Logout" : // Signs user out and destroys session.
-                        $iCommand = new Logout ($requestData);
+                    case "UpdateMajorCommand" : // Signs user out and destroys session.
+                        $iCommand = new UpdateMajorCommand ($requestData);
                         break;
-                    case "UpdateUserData" : // Updates a users credentials.
-                        $iCommand = new UpdateUserData ($requestData);
+                    case "UpdateMajorsCommand" : // Signs user out and destroys session.
+                        $iCommand = new UpdateMajorsCommand ($requestData);
                         break;
-                    case "GetUserData" : // Gets Data about the user.
-                        $iCommand = new GetUserData ($requestData);
+                    case "GetMajorCommand" : // Updates a users credentials.
+                        $iCommand = new GetMajorCommand ($requestData);
                         break;
-                    case "ForgotPassword" : // Configures a password change.
-                        $iCommand = new ForgotPassword ($requestData);
+                    case "GetMajorsCommand" : // Gets Data about the user.
+                        $iCommand = new GetMajorsCommand ($requestData);
                         break;
-                    case "ChangePassword" : // Changes a users password.
-                        $iCommand = new ChangePassword ($requestData);
+                    case "AddClassCommand" : // Configures a password change.
+                        $iCommand = new AddClassCommand ($requestData);
                         break;
-                    case "ChangeProfilePicture" : // Change the profile picture.
-                        $iCommand = new ChangeProfilePicture ($requestData);
+                    case "DeleteClassCommand" : // Changes a users password.
+                        $iCommand = new DeleteClassCommand ($requestData);
                         break;
-                    case "GetProfilePicture" : // Gets the profile picture.
-                        $iCommand = new GetProfilePicture ($requestData);
+                    case "DeleteClassesCommand" : // Changes a users password.
+                        $iCommand = new DeleteClassesCommand ($requestData);
+                        break;
+                    case "UpdateClassCommand" : // Change the profile picture.
+                        $iCommand = new UpdateClassCommand ($requestData);
+                        break;
+                    case "GetClassCommand" : // Gets the profile picture.
+                        $iCommand = new GetClassCommand ($requestData);
+                        break;
+                    case "GetClassesCommand"
+                        $iCommand = new GetClassesCommand ($requestData);
+                        break;
+                    case "AddSelectionCommand"
+                        $iCommand = new AddSelectionCommand ($requestData);
+                        break;
+                    case "DeleteSectionCommand"
+                        $iCommand = new DeleteSectionCommand ($requestData);
+                        break;
+                    case "DeleteSectionsCommand"
+                        $iCommand = new DeleteSectionsCommand ($requestData);
+                        break;
+                    case "UpdateSectionCommand"
+                        $iCommand = new UpdateSectionCommand ($requestData);
+                        break;
+                    case "GetSectionCommand"
+                        $iCommand = new GetSectionCommand ($requestData);
+                        break;
+                    case "GetSectionsCommand"
+                        $iCommand = new GetSectionsCommand ($requestData);
+                        break;
+                    case "LoginCommand"
+                        $iCommand = new LoginCommand ($requestData);
+                        break;
+                    case "LogoutCommand"
+                        $iCommand = new LogoutCommand ($requestData);
+                        break;
+                    case "ForgotPasswordsCommand"
+                        $iCommand = new ForgotPasswordsCommand ($requestData);
                         break;
                     default: // Service requested not found.
                         $serviceResult = ["response" => -1,"debug =>"

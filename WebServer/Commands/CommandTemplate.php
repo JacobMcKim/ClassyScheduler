@@ -46,7 +46,9 @@ class exampleCommand extends Command {
         $this->requestContent = $requestData;
 
         // Create the new required database objects to preform task.
-        $this->dbAccess = new  (); // TODO: 1. Determine which Database class to use based off command type.
+         // TODO: 1. Determine which Database class to use based of command
+         // type.
+        $this->dbAccess = new  ();
     }
 
     /******************************************************************
@@ -73,7 +75,8 @@ class exampleCommand extends Command {
         // --- Variable Declarations  -------------------------------//
 
         /* @var $commands (Array) Used to cross check the request.   */
-        $commandParams = array ("username", "password"); // TODO: 2. Fill out required field items for command.
+        // TODO: 2. Fill out required field items for command.
+        $commandParams = array ("username", "password");
 
         /* @var $commandResult (commandResult) The result model.     */
         $commandResult = new commandResult();

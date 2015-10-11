@@ -4,25 +4,27 @@ CREATE TABLE `classy`.`department` (
   `dID` INT NOT NULL COMMENT '',
   `dName` VARCHAR(3) NULL COMMENT '',
   PRIMARY KEY (`dID`)  COMMENT '');
-  
+
 insert into department values(1, 'CIS');
-  
+
 CREATE TABLE `classy`.`course` (
   `dNum` INT NOT NULL COMMENT '',
   `cID` INT NOT NULL COMMENT '',
   `title` VARCHAR(100) NULL COMMENT '',
+  `desc` VARCHAR(300) null comment '',
   PRIMARY KEY (`dNum`, `cID`)  COMMENT '',
   CONSTRAINT `fk_course1`
     FOREIGN KEY (`dNum`)
     REFERENCES `classy`.`department` (`dID`)
     ON DELETE NO ACTION
     ON UPDATE NO ACTION);
-    
-insert into course values (1, 162, 'Computer Science 1');
-insert into course values (1, 163, 'Computer Science 2');
-insert into course values (1, 263, 'Data Structures');
-insert into course values (1, 350, 'Software Engineering');
-insert into course values (1, 290, 'Internship Preperation');
+
+#TODO: populate descriptions
+insert into course values (1, 162, 'Computer Science 1', null);
+insert into course values (1, 163, 'Computer Science 2', null);
+insert into course values (1, 263, 'Data Structures', null);
+insert into course values (1, 350, 'Software Engineering', null);
+insert into course values (1, 290, 'Internship Preperation', null);
 
 CREATE TABLE `classy`.`semester` (
   `year` INT NOT NULL COMMENT '',
@@ -48,7 +50,7 @@ CREATE TABLE `classy`.`section` (
     FOREIGN KEY (`depNum` , `cNum`)
     REFERENCES `classy`.`course` (`dNum` , `cID`)
     ON DELETE NO ACTION
-    ON UPDATE NO ACTION,
+    ON UPDATE casade,
   CONSTRAINT `fk_section2`
     FOREIGN KEY (`semYear` , `semSeas`)
     REFERENCES `classy`.`semester` (`year` , `season`)

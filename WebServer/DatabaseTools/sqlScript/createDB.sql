@@ -1,6 +1,6 @@
 #Drop statement that will clear database for reintialization.
-DROP TABLE  `classy`.`section`,`classy`.`course`, `classy`.`department`,
-            `classy`.`semester`;
+#DROP TABLE  `classy`.`section`,`classy`.`course`, `classy`.`department`,
+#            `classy`.`semester`;
 
 #~~ Create department table.
 #~~~~ A table represendting all the departments at the institution.
@@ -90,7 +90,7 @@ CREATE TABLE `classy`.`section` (
     FOREIGN KEY (`depNum` , `cNum`)
     REFERENCES `classy`.`course` (`dNum` , `cID`)
     ON DELETE NO ACTION
-    ON UPDATE casade,
+    ON UPDATE cascade,
   CONSTRAINT `fk_section2`
     FOREIGN KEY (`semYear` , `semSeas`)
     REFERENCES `classy`.`semester` (`year` , `season`)

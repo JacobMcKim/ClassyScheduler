@@ -21,24 +21,25 @@
 //===================================================================//
 //  Includes                                                         //
 //===================================================================//
-Include "controllers\RequestManager.php";
-require '/kint/Kint.class.php';
+require_once 'Generics.php';
+require "Controllers/RequestManager.php";
 
 //===================================================================//
 // Variables                                                         //
 //===================================================================//
 
 /* The instance of the request manager controller that dispatches.   */
-$rqManager = null;
+$rqManager = NULL;
 
 /* The input data.                                                   */
-$inputData = Null;
+$inputData = NULL;
+
+/* The outbound data stored in the model object.                     */
+$responseObj = NULL;
 
 //===================================================================//
 // Main Routine                                                      //
 //===================================================================//
-
-Kint::dump( $_SERVER);
 
 // Construct the request manager.
 $rqManager = new RequestManager ();
@@ -49,11 +50,11 @@ if ($rqManager != Null) {
   switch($_SERVER['REQUEST_METHOD'])
   {
   case 'GET':
-    $inputData = &$_GET;
+    $inputData = &$_GET["request"];
     break;
 
   case 'POST':
-    $inputData = &$_POST;
+    $inputData = &$_POST["request"];
     break;
 
   default:
@@ -62,12 +63,17 @@ if ($rqManager != Null) {
     break;
   }
 
-  $rqManager -> callService();
-  $rqManager -> returnResult();
+
+$inputData = json_decode($inputData, true);
+$responseObj = $rqManager -> callService($inputData);
+$rqManager -> returnResult($responseObj);
+Kint::dump( $_SERVER);
+
 }
 
 else {
   echo "{ \"Response\" : -1 }";
+  exit();
 }
 
 //-------------------------------------------------------------------//

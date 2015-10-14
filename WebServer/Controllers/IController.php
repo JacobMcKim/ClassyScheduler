@@ -12,11 +12,6 @@
  * Date Of Creation: 10 - 01 - 2015                                    *
  * ------------------------------------------------------------------- */
 
-//===================================================================//
-//  Includes                                                         //
-//===================================================================//
-include '../Generics.php';
-
 interface IController {
 
     //----------------------------------------------------------------//
@@ -35,6 +30,21 @@ interface IController {
      *****************************************************************/
     public static function callService ( $requestData );
 
+    /******************************************************************
+    * @Description - A method called to send back a result from the
+    * executed command on the server with the results.
+    *
+    * @param $ResultObj - The result object we want to format back to a
+    * json string. 
+    *
+    * @return None
+    *
+    *****************************************************************/
+   public static function returnResult ($ResultObj);
+
+
     //----------------------------------------------------------------//
 
 }
+
+?>

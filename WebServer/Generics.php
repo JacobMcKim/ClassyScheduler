@@ -9,6 +9,10 @@
  * Author : McKim A. Jacob                                             *
  * Date Of Creation: 10 - 02 - 2015                                    *
  * ------------------------------------------------------------------- */
+ require_once 'kint/Kint.class.php';
+require_once 'Models/CommandResult.php';
+ require_once 'DatabaseTools/MySqlDatabaseTool.php';
+
 
 //===================================================================//
 //  NOTES & BUGS AS OF 10-01-2015                                    //
@@ -61,4 +65,8 @@ function keygen($length=10)
     // Return the result.
     return $key;
 }
+
+
 //===================================================================//
+
+?>

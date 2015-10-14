@@ -16,217 +16,262 @@
 //  NOTES & BUGS AS OF 10-01-2015                                     //
 //===================================================================//
 /*
- * TODO: ADD debug to constructor & open/close. 4/30/14
- * TODO: ADD a session check method. 5/1/14.
+*
  */
+ 
+ //===================================================================//
+ //  Includes                                                         //
+ //===================================================================//
+ require_once 'IDatabaseTool.php';
 
-//===================================================================//
-//  Includes                                                         //
-//===================================================================//
+ //===================================================================//
+ // Class Definition                                                  //
+ //===================================================================//
 class MySqlDatabaseTool Implements IDatabaseTool {
-    //---------------------------------------------------------------//
-    // Class Atributes                                               //
-    //---------------------------------------------------------------//
 
-    /* @var $dbConnect (PDOObject) The connection to the DB service. */
-    private $dbConnect = NULL;
+  //---------------------------------------------------------------//
+  // Class Atributes                                               //
+  //---------------------------------------------------------------//
 
-    /* The host address of the database service. */
-    const _host = "127.00.00.01:3306";
+  /* @var $dbConnect (MySQLi) The connection to the DB service.    */
+  private $dbConnect = NULL;
 
-    /* @var $isOpen (Boolean) Whether or not the connection is open. */
-    private $isOpen = false;
+  /* The database name were connecting to.                         */
+  const _database = "classy";
 
-    /* The account password to use when signing into the service. */
-    const _password = "root";
-    
-    /* The account username to use when signing into the service. */
-    const _user = "root";
+  /* The host address of the database service.                     */
+  const _host = "127.00.00.01:3306";
 
-    //---------------------------------------------------------------//
-    // Constructor/Destructors                                       //
-    //---------------------------------------------------------------//
-    /******************************************************************
-     * @Description - Called to generate a MySqlDatabase Tool.
-     *
-     * @param $requestData - The json request data required to make the
-     * request.
-     *
-     * @return None
-     *
-     *****************************************************************/
-    function __construct() {
+  /* @var $isOpen (Boolean) Whether or not the connection is open. */
+  private $isOpen = false;
 
-        // Attempt to open the connection to the database.
-        if ( !openConnection () ) {
-            throw new Exception ("AccountsDBTool (Constructor): "
-                    . "Failed to connect.");
+  /* The account password to use when signing into the service.    */
+  private $password = NULL;
+
+  /* The account username to use when signing into the service.    */
+  private $user = NULL;
+
+    /* The command to be executed by dbconnect object .            */
+  private $quertStmt = NULL;
+
+  //---------------------------------------------------------------//
+  // Constructor/Destructors                                       //
+  //---------------------------------------------------------------//
+  /******************************************************************
+   * @Description - Called to generate a MySqlDatabase Tool.
+   *
+   * @param $requestData - The json request data required to make the
+   * request.
+   *
+   * @return None
+   *
+   *****************************************************************/
+  function __construct($connectionType) {
+
+    if ($connectionType == "studentClient") {
+      $user = "root";
+      $password = "password";
+    }
+    elseif ($connectionType == "adminClient") {
+      $user = "root";
+      $password = "password";
+    }
+    else {
+      throw new Exception ("MySqlDataBaseTool (Constructor): "
+              . "invalid connection type.");
+    }
+
+      // Attempt to open the connection to the database.
+      if ( !openConnection () ) {
+          throw new Exception ("MySqlDataBaseTool (Constructor): "
+                  . "Failed to connect.");
+      }
+      else {
+          $this->isOpen = true;
+      }
+
+  }
+
+  /******************************************************************
+   * @Description - Called when the command has finished executing
+   * and its time to tear down all the command's resources.
+   *
+   * @param None
+   *
+   * @return None
+   *
+   *****************************************************************/
+  function __destruct() {
+
+      // Attempt to open the connection to the database.
+      if ( !closeConnection () ) {
+          throw new Exception ("MySqlDataBaseTool (Destructor): "
+                  . "Failed to close connection.");
+      }
+
+      else {
+          $this->isOpen = false;
+      }
+
+  }
+  //---------------------------------------------------------------//
+  // Class Methods                                                 //
+  //---------------------------------------------------------------//
+
+  /* closes the connection to the DB service. */
+  public function closeConnection() {
+
+      // --- Variable Declarations  -------------------------------//
+      /* @var $success (boolean) The success of openConnection. */
+      $success = true;
+
+      // --- Main Routine -----------------------------------------//
+
+      // If the database is open close it.
+      if ($this->isOpen) {
+          try {
+              $this->dbConnect->close();
+              $this->dbConnect = NULL;
+          }
+          catch (Exception $e) {
+              $success = false;
+          }
+      }
+
+      // Return the execution result.
+      return $success;
+
+  }
+
+
+  /* Issues a query to the DB service as well fetches results.   */
+  public function getResults () {
+
+    // --- Variable Declarations  -------------------------------//
+
+    /* @var $results The output of the executed command in raw form. */
+    $resultsRaw = NULL;
+
+    /* A row from the result of query.                            */
+    $row = NULL;
+
+    /* The result array.                                          */
+    $resultArray = array();
+
+    // --- Main Routine -----------------------------------------//
+
+    // 1. Pull the results.
+    $resultsRaw = $stmt->get_result();
+    if ($resultsRaw != false) {
+
+      // 2. Build the array.
+      while ($row = $resultsRaw->fetch_array(MYSQLI_NUM)) {
+        array_push($resultArray,$row);
+      }
+
+    }
+    else {
+      return $resultsRaw;
+    }
+
+  }
+
+
+  /* Execute a sql command to the database. */
+  public function executeQuery ($RequestString,$atributeTypes,$RequestAtributes) {
+
+      // --- Variable Declarations  -------------------------------//
+
+      /* @var $query - The command to be executed by PDO. */
+      $query = NULL;
+
+      // --- Main Routine -----------------------------------------//
+
+      // 1. Construct the query.
+      if ($RequestString != null && mb_substr_count ($RequestAtributes, ':')
+                                                  == count ($RequestAtributes) ) {
+        $quertStmt = $this->dbConnect->stmt_init();
+        if ($quertStmt->mysqli_prepare($RequestString)) {
+          $quertStmt = $quertStmt->mysqli_bind_param($atributeTypes,$RequestAtributes);
+
+          // 2. Execute the query.
+          return $quertStmt->execute();
         }
 
         else {
-            $this->isOpen = true;
+          return false;
         }
 
-    }
+      }
+      else {
+        return false;
+      }
 
-    /******************************************************************
-     * @Description - Called when the command has finished executing
-     * and its time to tear down all the command's resources.
-     *
-     * @param None
-     *
-     * @return None
-     *
-     *****************************************************************/
-    function __destruct() {
+  }
 
-        // Attempt to open the connection to the database.
-        if ( !closeConnection () ) {
-            throw new Exception ("AccountsDBTool (Destructor): "
-                    . "Failed to close connection.");
-        }
 
-        else {
-            $this->isOpen = false;
-        }
+  /******************************************************************
+   * @Description - An accessor method stating whether or not the
+   * connection is open to the database or not.
+   *
+   * @param None
+   *
+   * @return Whether or not a connection exist (Boolean).
+   *
+   *****************************************************************/
+  public function getIsOpen () {
+      return $this->isOpen;
 
-    }
-    //---------------------------------------------------------------//
-    // Class Methods                                                 //
-    //---------------------------------------------------------------//
+  }
 
-    /* closes the connection to the DB service. */
-    private function closeConnection() {
+  /******************************************************************
+   * @Description - An accessor method stating how many rows if any
+   * are in the result set of the query.
+   *
+   * @param None
+   *
+   * @return the number of rows that are in the result (Boolean).
+   *
+   *****************************************************************/
+  public function getResultSize () {
+    return count($resultArray);
+  }
 
-        // --- Variable Declarations  -------------------------------//
-        /* @var $success (boolean) The success of openConnection. */
-        $success = true;
 
-        // --- Main Routine -----------------------------------------//
+  /* Opens a connection to the DB service. */
+  public function openConnection() {
 
-        // If the database is open close it.
-        if ($this->isOpen) {
-            try {
-                $this->dbConnect = NULL;
+      // --- Variable Declarations  -------------------------------//
+      /* @var $success (boolean) The success of openConnection. */
+      $success = true;
+
+      // --- Main Routine -----------------------------------------//
+
+      // Make sure we haven't already opened the service.
+      if (!$this->isOpen)
+      {
+          // Attempt opening the service.
+          try {
+            $this->dbConnect = $mysqli->connect(_host,$username,$password,_database);
+            if ($this->dbConnect->connect_errno) {
+              $success = false;
+              return $success;
             }
-            catch (PDOException $pd) {
-                $success = false;
-                //TODO : ADD DEBUG
-            }
-        }
+          }
+          catch (Exception $e) {
+              $success = false;
+              throw new Exception ("In MySqlDataBaseTool(openConnection)"
+                . " - connection not established.");
+          }
+      }
 
-        // Return the execution result.
-        return $success;
+      // Return the execution result.
+      return $success;
 
-    }
+  }
 
-
-    /* Issues a query to the DB service as well fetches results.
-    * NOTE: The delimiter for this command is ':'.*/
-    public function executeFetch ($RequestString, $RequestAtributes) {
-
-        // --- Variable Declarations  -------------------------------//
-
-        /* @var $results The output of the executed command. */
-        $results = NULL;
-
-        // --- Main Routine -----------------------------------------//
-
-        // Make sure that the function.
-        if ($RequestString != null && mb_substr_count
-                ($RequestAtributes, ':') == count ($RequestAtributes) )
-        {
-            // Execute the command.
-            $query = $this->dbConnect->prepare($RequestString,
-                    array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-            $results = $query-> execute ($RequestAtributes);
-
-            // Fetch results and return.
-            return $results->fetch(PDO::FETCH_ASSOC);
-        }
-
-        else {
-            throw new PDOException ("In AccountsDBTool(ExecuteCommand)"
-                    . " - command string and parameter mismatch.");
-        }
-
-    }
-
-
-    /* Execute a sql command to the database.
-     * NOTE: The delimiter for this command is ':'.*/
-    public function executeQuery ($RequestString, $RequestAtributes) {
-
-        // --- Variable Declarations  -------------------------------//
-
-        /* @var $query - The command to be executed by PDO. */
-        $query = NULL;
-
-        // --- Main Routine -----------------------------------------//
-
-        // Make sure that the function.
-        if ($RequestString != null && mb_substr_count
-                ($RequestAtributes, ':') == count ($RequestAtributes) )
-        {
-            // Execute the command.
-            $query = $this->dbConnect->prepare($RequestString,
-                    array(PDO::ATTR_CURSOR => PDO::CURSOR_FWDONLY));
-            return $query-> execute ($RequestAtributes);
-        }
-
-        else {
-            throw new PDOException ("In AccountsDBTool(ExecuteCommand)"
-                    . " - command string and parameter mismatch.");
-        }
-
-    }
-
-
-    /******************************************************************
-     * @Description - An accessor method stating whether or not the
-     * connection is open to the database or not.
-     *
-     * @param None
-     *
-     * @return Whether or not a connection exist (Boolean).
-     *
-     *****************************************************************/
-    public function getIsOpen () {
-        return $this->isOpen;
-
-    }
-
-
-    /* Opens a connection to the DB service. */
-    private function openConnection() {
-
-        // --- Variable Declarations  -------------------------------//
-        /* @var $success (boolean) The success of openConnection. */
-        $success = true;
-
-        // --- Main Routine -----------------------------------------//
-
-        // Make sure we haven't already opened the service.
-        if (!$this->isOpen)
-        {
-            // Attempt opening the service.
-            try {
-                $this->dbConnect = new PDO("mysql:host=_host;dbname=mysql",
-                        _user, _password);
-            }
-
-            catch (PDOException $e) {
-                $success = false;
-
-                // TODO: ADD DEBUG
-            }
-        }
-
-        // Return the execution result.
-        return $success;
-
-    }
-
-    //---------------------------------------------------------------//
+  //---------------------------------------------------------------//
 
 }
+
+?>

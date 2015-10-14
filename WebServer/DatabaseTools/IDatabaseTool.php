@@ -20,11 +20,6 @@
  *
  */
 
-//===================================================================//
-//  Includes                                                         //
-//===================================================================//
-include '../Generics.php';
-
 interface IDatabaseTool {
     //----------------------------------------------------------------//
     //  Interface Function Declerations                               //
@@ -47,16 +42,12 @@ interface IDatabaseTool {
     * @Description - This method is used to fetch a set of results
     * from a command issued to the data base service.
     *
-    * @param $RequestString (String)- The command string to be
-    * executed inside the DB service.
+    * @param (N/A)
     *
-    * @param $RequestAtributes (associativeArray) - The atributes to
-    * be included into the query if any.
-    *
-    * @return The success or failure of the query executed (Boolean).
+    * @return Returns what results are contained if any from query.
     *
     *****************************************************************/
-    function executeFetch ($RequestString, $RequestAtributes);
+    function getResults ();
 
 
     /******************************************************************
@@ -72,7 +63,7 @@ interface IDatabaseTool {
     * @return The success or failure of the query executed (Boolean).
     *
     *****************************************************************/
-    function executeQuery ($RequestString, $RequestAtributes);
+    function executeQuery ($RequestString,$atributeTypes,$RequestAtributes);
 
 
     /******************************************************************
@@ -92,3 +83,5 @@ interface IDatabaseTool {
     //----------------------------------------------------------------//
 
 }
+
+?>

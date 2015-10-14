@@ -21,10 +21,11 @@ class exampleCommand extends Command {
     //---------------------------------------------------------------//
     // Class Atributes                                               //
     //---------------------------------------------------------------//
-    /* @var $dbAccess () The database access object linking to DB.   */
+
+    /* The database access object linking to DB.                     */
     private $dbAccess;
 
-    /* @var $requestContent (Array) The content of the user request. */
+    /* The content of the user request.                              */
     private $requestContent = array();
 
     //---------------------------------------------------------------//
@@ -46,6 +47,8 @@ class exampleCommand extends Command {
         $this->requestContent = $requestData;
 
         // Create the new required database objects to preform task.
+        $this->dbAccess = new MySqlDatabaseTool("adminClient"); // TODO: 1. Determine which Database class to use based off command type.
+
          // TODO: 1. Determine which Database class to use based of command
          // type.
         $this->dbAccess = new  ();
@@ -65,6 +68,7 @@ class exampleCommand extends Command {
         $this->requestContent = NULL;
 
     }
+
     //---------------------------------------------------------------//
     // Class Methods                                                 //
     //---------------------------------------------------------------//
@@ -75,8 +79,7 @@ class exampleCommand extends Command {
         // --- Variable Declarations  -------------------------------//
 
         /* @var $commands (Array) Used to cross check the request.   */
-        // TODO: 2. Fill out required field items for command.
-        $commandParams = array ("username", "password");
+        $commandParams = array ("name", "section", "Description"); // TODO: 2. Fill out required field items for command.
 
         /* @var $commandResult (commandResult) The result model.     */
         $commandResult = new commandResult();
@@ -92,17 +95,18 @@ class exampleCommand extends Command {
         // Check if the request contains all necessary parameters.
         if ( $this->isValidContent ($this->requestContent, $commandParams) ) {
 
-            // TODO: 3. Brief Description of what is going to happen.
-            try {
-                // TODO 4: Implement code.
-            }
+          // TODO: 3. Brief Description of what is going to happen.
+          try {
+            // TODO 4: Implement code.
+          }
 
-            catch (PDOException $pdoE) {
-                // TODO 5: Perform fault out code and return failure.
-            }
+          catch (Exception $e) {
+            $result = new commandResult ("systemError");
+            $result->addValuePair ("Description","Database failure.");
+          }
 
-            // Return the result of the command.
-            return $commandResult;
+          // Return the result of the command.
+          return $commandResult;
         }
     }
 

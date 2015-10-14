@@ -28,7 +28,7 @@ interface ICommand {
     * @Description - A method called to execute the request API
     * command. This is where the magic happens in the command object.
     *
-    * @return A json array result of the command's execution.
+    * @return A (ICommandResult) object with the result of the query.
     *
     *****************************************************************/
     public function executeCommand ();
@@ -53,3 +53,5 @@ interface ICommand {
     //----------------------------------------------------------------//
 
 }
+
+?>

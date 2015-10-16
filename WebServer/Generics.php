@@ -9,10 +9,33 @@
  * Author : McKim A. Jacob                                             *
  * Date Of Creation: 10 - 02 - 2015                                    *
  * ------------------------------------------------------------------- */
- require_once 'kint/Kint.class.php';
-require_once 'Models/CommandResult.php';
- require_once 'DatabaseTools/MySqlDatabaseTool.php';
 
+//===================================================================//
+//  Includes                                                         //
+//===================================================================//
+
+require_once 'kint/Kint.class.php';
+
+// Data Models
+require_once 'Models/ICommandResult.php';
+require_once 'Models/CommandResult.php';
+
+// Database Tools
+require_once 'DatabaseTools/IDatabaseTool.php';
+require_once 'DatabaseTools/MySqlDatabaseTool.php';
+
+// Commands
+require_once "Commands/ICommand.php";
+require_once "Commands/Command.php";
+
+// ## Admin Panel commands
+require_once "Commands/AdminClient/AddCourseCommand.php";
+require_once "Commands/AdminClient/DeleteCourseCommand.php";
+require_once "Commands/AdminClient/UpdateClassCommand.php";
+
+// Controllers
+require_once "Controllers/IController.php";
+require_once "Controllers/RequestManager.php";
 
 //===================================================================//
 //  NOTES & BUGS AS OF 10-01-2015                                    //
@@ -29,6 +52,7 @@ require_once 'Models/CommandResult.php';
 //===================================================================//
 // Helper Methods                                                    //
 //===================================================================//
+
 /******************************************************************
   * @Description - This method is used to randomly generate string
   *  values to be used in security parameters and other various

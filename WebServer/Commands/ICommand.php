@@ -14,9 +14,9 @@
 //===================================================================//
 //  Includes                                                         //
 //===================================================================//
-include '../Generics.php';
-include '../DatabaseTools/dbClientConnection.php';
-include '../DatabaseTools/dbPanelConnection.php';
+#include '../Generics.php';
+#include '../DatabaseTools/dbClientConnection.php';
+#include '../DatabaseTools/dbPanelConnection.php';
 
 interface ICommand {
 
@@ -48,7 +48,7 @@ interface ICommand {
     * executing the request. (True - all there. False - Not all there)
     *
     *****************************************************************/
-    function isValidContent ( $Content, $arrayParams );
+    public function isValidContent ( $Content, $arrayParams );
 
     //----------------------------------------------------------------//
 

@@ -15,14 +15,13 @@
 //  NOTES & BUGS AS OF 10-02-2015                                    //
 //===================================================================//
 /*
-*  TODO - Add debug utility.
+*
 */
 
 //===================================================================//
 //  Includes                                                         //
 //===================================================================//
 require_once 'Generics.php';
-require "Controllers/RequestManager.php";
 
 //===================================================================//
 // Variables                                                         //
@@ -58,21 +57,24 @@ if ($rqManager != Null) {
     break;
 
   default:
-    echo "{ \"Response\" : -1 }";
+    echo '{ "Response" : "InvalidData" }';
     exit();
     break;
   }
 
-
-$inputData = json_decode($inputData, true);
-$responseObj = $rqManager -> callService($inputData);
-$rqManager -> returnResult($responseObj);
-Kint::dump( $_SERVER);
+$inputData = json_decode($inputData,True);
+if ($inputData != NULL || $inputData != false) {
+  $responseObj = $rqManager -> callService($inputData);
+  $rqManager -> returnResult($responseObj);
+}
+else {
+  echo '{ "Response" : "InvalidData" }';
+}
 
 }
 
 else {
-  echo "{ \"Response\" : -1 }";
+  echo '{ "Response" : "InvalidData" }';
   exit();
 }
 

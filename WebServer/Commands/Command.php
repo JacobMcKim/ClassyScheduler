@@ -31,26 +31,27 @@ abstract class Command implements ICommand {
     //---------------------------------------------------------------//
     /* Executes the command defined for the service implementation. */
     abstract public function executeCommand ();
+    
     //---------------------------------------------------------------//
     // Concrete Class Methods                                        //
     //---------------------------------------------------------------//
     /* Validates the commands parameters before execution. */
-    protected function isValidContent( $Content, $arrayParams ) {
+    public function isValidContent( $Content, $arrayParams ) {
+
         // --- Variable Declarations  -------------------------------//
-        /* @var $isValid Boolean The result if all values are there. */
-        $isValid = true;
-        /* @var $isValid String The current parameter being checked. */
+
+        /* String The current parameter being checked.               */
         $param = NULL;
+
         // --- Main Routine -----------------------------------------//
         // Check each parameter and insure they are there.
-        foreach ( $param as $arrayParams )
+        foreach ($arrayParams as $param)
         {
-            if ( $Content [$param] == NULL ) {
-                $isValid = false;
-                break;
+            if (!array_key_exists ($param,$Content)) {
+                return false;
             }
         }
-        return $isValid;
+        return true;
 
     }
 

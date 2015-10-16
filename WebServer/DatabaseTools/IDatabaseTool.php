@@ -63,7 +63,7 @@ interface IDatabaseTool {
     * @return The success or failure of the query executed (Boolean).
     *
     *****************************************************************/
-    function executeQuery ($RequestString,$atributeTypes,$RequestAtributes);
+    function executeQuery ($RequestString,$RequestAtributes);
 
 
     /******************************************************************

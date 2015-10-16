@@ -25,17 +25,17 @@ interface IController {
      * @param $requestData - The request JSON array to be fead in to the
      * API command.
      *
-     * @return The result of the API request as a JSON Array.
+     * @return The result of the API request as an (CommandResult).
      *
      *****************************************************************/
-    public static function callService ( $requestData );
+    public static function callService ($requestData);
 
     /******************************************************************
     * @Description - A method called to send back a result from the
     * executed command on the server with the results.
     *
     * @param $ResultObj - The result object we want to format back to a
-    * json string. 
+    * json string.
     *
     * @return None
     *

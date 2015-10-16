@@ -1,22 +1,22 @@
 <?php
 /* --------------------------------------------------------------------*
- * TODO DeleteCourseCommand.php                                   *
+ * DeleteCourseCommand.php                                             *
  * --------------------------------------------------------------------*
- * Description - Command allows administrator to delete a class        *
+ * Description - Command allows administrator to delete a course.      *
  * --------------------------------------------------------------------*
  * Project: Classy Scheduler Web Server                                *
- * Author : Kristopher Trevino                                     *
- * Date Of Creation: 10-13-2015                       *
+ * Author : Kristopher Trevino                                         *
+ * Date Of Creation: 10-13-2015                                        *
  * ------------------------------------------------------------------- */
 
 //===================================================================//
-//  NOTES & BUGS AS OF 10-13-2015                     //
+//  NOTES & BUGS AS OF 10-13-2015                                    //
 //===================================================================//
 /*
  *
  */
 
-class DeleteClassCommand extends Command {
+class DeleteCourseCommand extends Command {
 
     //---------------------------------------------------------------//
     // Class Atributes                                               //
@@ -49,8 +49,6 @@ class DeleteClassCommand extends Command {
         // Create the new required database objects to preform task.
         $this->dbAccess = new MySqlDatabaseTool("adminClient");
 
-         // type.
-        $this->dbAccess = new  ();
     }
 
     /******************************************************************
@@ -81,10 +79,7 @@ class DeleteClassCommand extends Command {
         $commandParams = array ("ServiceID", "DepartmentID", "CourseID");
 
         /* @var $commandResult (commandResult) The result model.     */
-        $commandResult = new commandResult();
-
-        /* @var $result (object) The output of PDO sql executes.     */
-        $result = NULL;
+        $commandResult;
 
         /* @var $sqlQuery (object) The query to execute on service.  */
         $sqlQuery = NULL;
@@ -96,31 +91,40 @@ class DeleteClassCommand extends Command {
 
           // TODO: 3. Brief Description of what is going to happen.
           try {
-            //
-            $sqlQuery = "SELECT title FROM course WHERE cID = ? AND dNum = ?";
-            $sqlParams = array($requestContent["CourseID"],$requestContent["departmentID"]);
-            $dbAccess -> executeQuery ($sqlQuery,"ii",$sqlParams);
 
-            //
-            if ($dbAccess->getResultSize() > 0) {
+            // Check if the class exists.
+            $sqlQuery = "SELECT * FROM course WHERE cID = ? AND dNum = ?";
+            $sqlParams = array($this->requestContent["CourseID"],$this->requestContent["DepartmentID"]);
+            $this->dbAccess->executeQuery ($sqlQuery,$sqlParams);
+
+            // Delete the class if it does exist.
+            if ($this->dbAccess->getResults() != NULL) {
                $sqlQuery = "DELETE FROM course WHERE cID = ? AND dNum = ?";
-               if ($dbAccess -> executeQuery ($sqlQuery,"ii",$sqlParams)) {
-                 $result = new commandResult ("success");
+               if ($this->dbAccess->executeQuery ($sqlQuery,$sqlParams)) {
+                 $commandResult = new commandResult ("success");
                }
+
                else {
-                 $result = new commandResult ("failed");
-                 $result->addValuePair ("Description","class already exists.");
+                 $commandResult = new commandResult ("failed");
+                 $commandResult->addValuePair ("Description","Falied to delete class.");
                }
-          }
+             }
+
+             else {
+               $commandResult = new commandResult ("failed");
+               $commandResult->addValuePair ("Description","Course doesn't exist.");
+             }
+           }
 
           catch (Exception $e) {
-            $result = new commandResult ("systemError");
-            $result->addValuePair ("Description","Database failure.");
+            $commandResult = new commandResult ("systemError");
+            $commandResult->addValuePair ("Description","Database failure.");
           }
 
           // Return the result of the command.
           return $commandResult;
         }
+
     }
 
     //---------------------------------------------------------------//

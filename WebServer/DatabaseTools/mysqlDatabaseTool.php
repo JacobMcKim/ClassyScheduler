@@ -16,13 +16,8 @@
 //  NOTES & BUGS AS OF 10-01-2015                                     //
 //===================================================================//
 /*
-*
+ *
  */
- 
- //===================================================================//
- //  Includes                                                         //
- //===================================================================//
- require_once 'IDatabaseTool.php';
 
  //===================================================================//
  // Class Definition                                                  //
@@ -37,10 +32,10 @@ class MySqlDatabaseTool Implements IDatabaseTool {
   private $dbConnect = NULL;
 
   /* The database name were connecting to.                         */
-  const _database = "classy";
+  private $database = "classy";
 
   /* The host address of the database service.                     */
-  const _host = "127.00.00.01:3306";
+  private $host = "localhost";#"127.0.0.01:3306";
 
   /* @var $isOpen (Boolean) Whether or not the connection is open. */
   private $isOpen = false;
@@ -51,8 +46,14 @@ class MySqlDatabaseTool Implements IDatabaseTool {
   /* The account username to use when signing into the service.    */
   private $user = NULL;
 
-    /* The command to be executed by dbconnect object .            */
-  private $quertStmt = NULL;
+  /* The command to be executed by dbconnect object .              */
+  private $queryStmt = NULL;
+
+  /* The number of results we have.                                */
+  private $resultCount = 0;
+
+  /* The number of results we have.                                */
+  private $resultArray = NULL;
 
   //---------------------------------------------------------------//
   // Constructor/Destructors                                       //
@@ -69,12 +70,12 @@ class MySqlDatabaseTool Implements IDatabaseTool {
   function __construct($connectionType) {
 
     if ($connectionType == "studentClient") {
-      $user = "root";
-      $password = "password";
+      $this->user = "student";
+      $this->password = "JvDBDzQ6TTwQxXU9";
     }
     elseif ($connectionType == "adminClient") {
-      $user = "root";
-      $password = "password";
+      $this->user = "admin";
+      $this->password = "nPmCPeWu3nC84xCF";
     }
     else {
       throw new Exception ("MySqlDataBaseTool (Constructor): "
@@ -82,7 +83,7 @@ class MySqlDatabaseTool Implements IDatabaseTool {
     }
 
       // Attempt to open the connection to the database.
-      if ( !openConnection () ) {
+      if ( !$this->openConnection() ) {
           throw new Exception ("MySqlDataBaseTool (Constructor): "
                   . "Failed to connect.");
       }
@@ -104,13 +105,13 @@ class MySqlDatabaseTool Implements IDatabaseTool {
   function __destruct() {
 
       // Attempt to open the connection to the database.
-      if ( !closeConnection () ) {
+      try {
+          $this->dbConnect = NULL;
+          $this->isOpen = false;
+      }
+      catch (Exception $e) {
           throw new Exception ("MySqlDataBaseTool (Destructor): "
                   . "Failed to close connection.");
-      }
-
-      else {
-          $this->isOpen = false;
       }
 
   }
@@ -122,24 +123,19 @@ class MySqlDatabaseTool Implements IDatabaseTool {
   public function closeConnection() {
 
       // --- Variable Declarations  -------------------------------//
-      /* @var $success (boolean) The success of openConnection. */
-      $success = true;
+
+      /* N/A */
 
       // --- Main Routine -----------------------------------------//
 
       // If the database is open close it.
       if ($this->isOpen) {
-          try {
-              $this->dbConnect->close();
-              $this->dbConnect = NULL;
-          }
-          catch (Exception $e) {
-              $success = false;
-          }
+        $this->dbConnect = NULL;
+        return true;
       }
-
-      // Return the execution result.
-      return $success;
+      else {
+        return false;
+      }
 
   }
 
@@ -149,66 +145,42 @@ class MySqlDatabaseTool Implements IDatabaseTool {
 
     // --- Variable Declarations  -------------------------------//
 
-    /* @var $results The output of the executed command in raw form. */
-    $resultsRaw = NULL;
-
-    /* A row from the result of query.                            */
-    $row = NULL;
-
-    /* The result array.                                          */
-    $resultArray = array();
+    /* (N/A) */
 
     // --- Main Routine -----------------------------------------//
-
-    // 1. Pull the results.
-    $resultsRaw = $stmt->get_result();
-    if ($resultsRaw != false) {
-
-      // 2. Build the array.
-      while ($row = $resultsRaw->fetch_array(MYSQLI_NUM)) {
-        array_push($resultArray,$row);
-      }
-
+    if ($this->resultArray != NULL && $this->resultCount > 0) {
+      return $this->resultArray;
     }
     else {
-      return $resultsRaw;
+      return NULL;
     }
 
   }
 
-
   /* Execute a sql command to the database. */
-  public function executeQuery ($RequestString,$atributeTypes,$RequestAtributes) {
+  public function executeQuery ($RequestString,$RequestAtributes) {
 
       // --- Variable Declarations  -------------------------------//
 
-      /* @var $query - The command to be executed by PDO. */
-      $query = NULL;
+      /* N/A */
 
       // --- Main Routine -----------------------------------------//
 
       // 1. Construct the query.
-      if ($RequestString != null && mb_substr_count ($RequestAtributes, ':')
-                                                  == count ($RequestAtributes) ) {
-        $quertStmt = $this->dbConnect->stmt_init();
-        if ($quertStmt->mysqli_prepare($RequestString)) {
-          $quertStmt = $quertStmt->mysqli_bind_param($atributeTypes,$RequestAtributes);
+      if ($RequestString != null && mb_substr_count($RequestString,"?") == count ($RequestAtributes) ) {
 
-          // 2. Execute the query.
-          return $quertStmt->execute();
+        $this->queryStmt = $this->dbConnect->prepare($RequestString);
+        $this->resultCount = $this->queryStmt->execute($RequestAtributes);
+        if ($this->resultCount > 0) {
+          $this->resultArray = $this->queryStmt->fetchAll(PDO::FETCH_ASSOC);
         }
-
-        else {
-          return false;
-        }
-
+        return true;
       }
       else {
         return false;
       }
 
   }
-
 
   /******************************************************************
    * @Description - An accessor method stating whether or not the
@@ -224,20 +196,6 @@ class MySqlDatabaseTool Implements IDatabaseTool {
 
   }
 
-  /******************************************************************
-   * @Description - An accessor method stating how many rows if any
-   * are in the result set of the query.
-   *
-   * @param None
-   *
-   * @return the number of rows that are in the result (Boolean).
-   *
-   *****************************************************************/
-  public function getResultSize () {
-    return count($resultArray);
-  }
-
-
   /* Opens a connection to the DB service. */
   public function openConnection() {
 
@@ -252,12 +210,9 @@ class MySqlDatabaseTool Implements IDatabaseTool {
       {
           // Attempt opening the service.
           try {
-            $this->dbConnect = $mysqli->connect(_host,$username,$password,_database);
-            if ($this->dbConnect->connect_errno) {
-              $success = false;
-              return $success;
-            }
+            $this->dbConnect = new PDO ('mysql:host=localhost;dbname=classy;charset=utf8',$this->user,$this->password);
           }
+
           catch (Exception $e) {
               $success = false;
               throw new Exception ("In MySqlDataBaseTool(openConnection)"

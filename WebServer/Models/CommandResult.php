@@ -21,7 +21,7 @@
 //===================================================================//
 //  Includes                                                         //
 //===================================================================//
-require_once 'ICommandResult.php';
+#require_once 'ICommandResult.php';
 
 //===================================================================//
 // Class Definition                                                  //
@@ -33,13 +33,13 @@ class CommandResult implements ICommandResult {
   //---------------------------------------------------------------//
 
   /* The result code associated with type.                         */
-  $resultCode;
+  private $resultCode;
 
   /* The content of the user request.                              */
-  $resultData;
+  private $resultData;
 
   /* The result type that is going back.                           */
-  $resultName;
+  private $resultName;
 
   //---------------------------------------------------------------//
   // Constructor/Destructors                                       //
@@ -54,7 +54,7 @@ class CommandResult implements ICommandResult {
    *****************************************************************/
   function __construct($resultType) {
     $this->setResultType($resultType);
-    $this->$resultData = array('Response' => $this->getResultType());
+    $this->resultData = array('Response' => $this->getResultType());
 
   }
 
@@ -78,24 +78,24 @@ class CommandResult implements ICommandResult {
     /* A method called to add a value to the result data.*/
    public function addValuePair ($key, $value) {
      if ($key != NULL && $value != NULL) {
-       array_push($this->$resultData, array($key => $value));
+       array_push($this->resultData, array($key => $value));
      }
 
    }
 
    /* A method called to clear all data stored by the request object.*/
    public function clearData () {
-     $this->$resultName = Null;
-     $this->$resultData = Null;
-     $this->$resultCode = Null;
+     $this->resultName = Null;
+     $this->resultData = Null;
+     $this->resultCode = Null;
 
    }
 
    /*A method called to convert the response to a json object to send
    back to the client.*/
    public function convertToJSON () {
-      if (count($this->$resultData) > 0) {
-        return json_encode($this->$resultData);
+      if (count($this->resultData) > 0) {
+        return json_encode($this->resultData);
       }
       else {
         return "";
@@ -106,7 +106,7 @@ class CommandResult implements ICommandResult {
    /* A method used to get the type of result we want to give back to the
    client. */
   public function  getResultType () {
-    return $this->$resultName;
+    return $this->resultName;
 
   }
 
@@ -115,28 +115,28 @@ class CommandResult implements ICommandResult {
    public function  setResultType ($resultType) {
       switch ($resultType) {
         case 'success':
-          $this->$resultCode = 1;
-          $this->$resultName = $resultType;
+          $this->resultCode = 1;
+          $this->resultName = $resultType;
           break;
 
         case 'failed':
-          $this->$resultCode = -1;
-          $this->$resultName = $resultType;
+          $this->resultCode = -1;
+          $this->resultName = $resultType;
           break;
 
         case 'invalidData':
-          $this->$resultCode = -2;
-          $this->$resultName = $resultType;
+          $this->resultCode = -2;
+          $this->resultName = $resultType;
           break;
 
         case 'systemError':
-          $this->$resultCode = -3;
-          $this->$resultName = $resultType;
+          $this->resultCode = -3;
+          $this->resultName = $resultType;
           break;
 
         default:
-          $this->$resultCode = 0;
-          $this->$resultName = "";
+          $this->resultCode = 0;
+          $this->resultName = "";
           return false;
           break;
       }

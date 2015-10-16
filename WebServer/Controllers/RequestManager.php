@@ -11,11 +11,6 @@
  * Date Of Creation: 10 - 02 - 2015                                    *
  * ------------------------------------------------------------------- */
 
- //===================================================================//
- //  Includes                                                         //
- //===================================================================//
- require_once "IController.php";
-
 //===================================================================//
 //  NOTES & BUGS AS OF 10-02-2015                                    //
 //===================================================================//
@@ -44,7 +39,8 @@ class RequestManager Implements IController {
       // --- Main Routine -----------------------------------------//
 
       // Make sure the serviceID element exists if so execute.
-      if ($requestData ["ServiceID"] != NULL) {
+      if ($requestData != NULL && array_key_exists("ServiceID",$requestData)
+                                      && $requestData ["ServiceID"] != NULL) {
 
         // Parse for the right command to be displayed.
         switch ( $requestData ["ServiceID"] ) { /*
@@ -67,26 +63,26 @@ class RequestManager Implements IController {
             $iCommand = new GetMajorsCommand ($requestData);
             break; */
           case "AddCourse" : // Configures a password change.
-            $iCommand = new AddClassCommand ($requestData);
+            $iCommand = new AddCourseCommand ($requestData);
             break;
           case "DeleteCourse" : // Changes a users password.
-            $iCommand = new DeleteClassCommand ($requestData);
+            $iCommand = new DeleteCourseCommand ($requestData);
             break;
           /*case "DeleteCourses" : // Changes a users password.
-            $iCommand = new DeleteClassesCommand ($requestData);
+            $iCommand = new DeleteCoursesCommand ($requestData);
             break;*/
-          case "UpdateClass" : // Change the profile picture.
-            $iCommand = new UpdateClassCommand ($requestData);
+          case "UpdateCourse" : // Change the profile picture.
+            $iCommand = new UpdateCourseCommand ($requestData);
             break;
           /*
-          case "GetClass" : // Gets the profile picture.
-            $iCommand = new GetClassCommand ($requestData);
+          case "GetCourse" : // Gets the profile picture.
+            $iCommand = new GetCourseCommand ($requestData);
             break;
-          case "GetClasses":
-            $iCommand = new GetClassesCommand ($requestData);
+          case "GetCourses":
+            $iCommand = new GetCoursesCommand ($requestData);
             break;
           case "AddSelection" :
-            $iCommand = new AddSelectionCommand ($requestData);
+            $iCommand = new AddSectionCommand ($requestData);
             break;
           case "DeleteSection" :
             $iCommand = new DeleteSectionCommand ($requestData);
@@ -140,10 +136,9 @@ class RequestManager Implements IController {
   /* A method called to send back a result from the executed command on the
   server with the results.*/
   public static function returnResult ($resultObj) {
-      // TODO: populate this.
-
-      // TODO : Fill this in.
-
+    if ($resultObj != NULL) {
+      echo ($resultObj->convertToJSON());
+    }
 
   }
 

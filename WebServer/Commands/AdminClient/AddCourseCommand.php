@@ -20,13 +20,13 @@
  /* --------------------------------------------------------------------*
   * Sample Request JSON                                                 *
   * --------------------------------------------------------------------*
- {
-   "serviceID" : "addCourse",
-   "departmentID" : 001,
-   "CourseID" : 350,
-   "Title": "Intro Software Engineering",
-   "Description" : "Software management lecture."
- }
+  {
+    "ServiceID": "AddCourse",
+    "DepartmentID": 1,
+    "CourseID": 225,
+    "Title": "Intro To Film",
+    "Description": "test"
+  }
  */
 
 class AddCourseCommand extends Command {
@@ -87,10 +87,10 @@ class AddCourseCommand extends Command {
         // --- Variable Declarations  -------------------------------//
 
         /* @var $commands (Array) Used to cross check the request.   */
-        $commandParams = array ("departmentID", "CourseID", "Title", "Description");
+        $commandParams = array ("DepartmentID", "CourseID", "Title", "Description");
 
         /* @var $commandResult (commandResult) The result model.     */
-        $commandResult = new commandResult();
+        $commandResult;
 
         /* @var $result (object) The output of PDO sql executes.     */
         $result = NULL;
@@ -103,36 +103,46 @@ class AddCourseCommand extends Command {
         // Check if the request contains all necessary parameters.
         if ( $this->isValidContent ($this->requestContent, $commandParams) ) {
 
-            // TODO: 3. Brief Description of what is going to happen.
+            // 3. Brief Description of what is going to happen.
             try {
                 // A. validate that the course doesn't exist already.
                 $sqlQuery = "SELECT * FROM course WHERE cID = ? AND dNum = ?";
-                $sqlParams = array($requestContent["CourseID"],$requestContent["departmentID"]);
-                $dbAccess -> executeQuery ($sqlQuery,"ii",$sqlParams);
+                $sqlParams = array($this->requestContent["CourseID"],$this->requestContent["DepartmentID"]);
+                $this->dbAccess->executeQuery ($sqlQuery,$sqlParams);
 
                 // B. If the course doesnt exist
-                if ($dbAccess->getResultSize() == 0) {
-                   $sqlQuery = "INSERT INTO course VALUES (?,?,?,?,?)";
-                   $sqlParams = array($requestData["departmentID"],$requestData["CourseID"],
-                   $requestData["Title"],$requestData["Description"]);
-                   if ($dbAccess -> executeQuery ($sqlQuery,"ii",$sqlParams)) {
-                     $result = new commandResult ("success");
+                if ($this->dbAccess->getResults() == NULL) {
+
+                   $sqlQuery = "INSERT INTO course (`dNum`, `cID`, `title`, `description`) VALUES (?,?,?,?)";
+                   $sqlParams = array($this->requestContent["DepartmentID"],$this->requestContent["CourseID"],
+                   $this->requestContent["Title"],$this->requestContent["Description"]);
+                   if ($this->dbAccess->executeQuery ($sqlQuery,$sqlParams)) {
+                     $commandResult = new commandResult ("success");
                    }
                    else {
-                     $result = new commandResult ("failed");
-                     $result->addValuePair ("Description","class already exists.");
+                     $commandResult = new commandResult ("failed");
+                     $commandResult->addValuePair ("Description","Database error creating class.");
                    }
+                }
+                else {
+                  $commandResult = new commandResult ("failed");
+                  $commandResult->addValuePair ("Description","class already exists.");
                 }
             }
 
             catch (Exception $e) {
-              $result = new commandResult ("systemError");
-              $result->addValuePair ("Description","Database failure.");
+              $commandResult = new commandResult ("systemError");
+              $commandResult->addValuePair ("Description","Database failure.");
             }
-
-            // Return the result of the command.
-            return $commandResult;
         }
+
+        else {
+          $commandResult = new commandResult ("invalidData");
+          $commandResult->addValuePair ("Description","Invalid input parameters for AddCourse.");
+        }
+
+        // Return the result of the command.
+        return $commandResult;
     }
 
     //---------------------------------------------------------------//

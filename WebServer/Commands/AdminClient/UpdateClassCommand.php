@@ -1,23 +1,25 @@
 <?php
 /* --------------------------------------------------------------------*
- * UpdateClassCommand.php                                              *
+ * UpdateCourseCommand.php                                             *
  * --------------------------------------------------------------------*
- * Description - Command allows administrator to update a class        *
+ * Description - Command allows admin to update a class information.   *
  * --------------------------------------------------------------------*
  * Project: Classy Scheduler Web Server                                *
- * Author : Kristopher Trevino                                     *
- * Date Of Creation: 10-13-2015                       *
+ * Author : Kristopher Trevino                                         *
+ * Date Of Creation: 10-13-2015                                        *
  * ------------------------------------------------------------------- */
 
 //===================================================================//
-//  NOTES & BUGS AS OF 10-13-2015                     //
+//  NOTES & BUGS AS OF 10-13-2015                                    //
 //===================================================================//
 /*
  *
  */
 
 
-class UpdateClassCommand extends Command {
+
+
+class UpdateCourseCommand extends Command {
 
     //---------------------------------------------------------------//
     // Class Atributes                                               //
@@ -50,8 +52,6 @@ class UpdateClassCommand extends Command {
         // Create the new required database objects to preform task.
         $this->dbAccess = new MySqlDatabaseTool("adminClient");
 
-         // type.
-        $this->dbAccess = new  ();
     }
 
     /******************************************************************
@@ -79,13 +79,11 @@ class UpdateClassCommand extends Command {
         // --- Variable Declarations  -------------------------------//
 
         /* @var $commands (Array) Used to cross check the request.   */
-        $commandParams = array ("DepartmentID", "CourseID", "NewDepartmentID", "NewCourseID", "NewTitle", "NewDescription");
+        $commandParams = array ("DepartmentID", "CourseID",
+          "NewDepartmentID", "NewCourseID", "NewTitle", "NewDescription");
 
         /* @var $commandResult (commandResult) The result model.     */
-        $commandResult = new commandResult();
-
-        /* @var $result (object) The output of PDO sql executes.     */
-        $result = NULL;
+        $commandResult = NULL;
 
         /* @var $sqlQuery (object) The query to execute on service.  */
         $sqlQuery = NULL;
@@ -99,32 +97,37 @@ class UpdateClassCommand extends Command {
           try {
             // A. validate that the course doesn't exist already.
             $sqlQuery = "SELECT * FROM course WHERE cID = ? AND dNum = ?";
-            $sqlParams = array($requestContent["CourseID"],$requestContent["departmentID"]);
-            $dbAccess -> executeQuery ($sqlQuery,"ii",$sqlParams);
+            $sqlParams = array($this->requestContent["CourseID"],$this->requestContent["DepartmentID"]);
+            $this->dbAccess->executeQuery($sqlQuery,$sqlParams);
 
             // B. If the course doesnt exist
-            if ($dbAccess->getResultSize() == 0) {
+            if ($this->dbAccess->getResults() != NULL) {
                $sqlQuery = "UPDATE course SET cID = ?, dNum = ?, title = ?, description = ? WHERE dNum = ? AND cID = ?";
-               $sqlParams = array($requestData["NewCourseID"],$requestData["NewDepartmentID"], $requestData["NewTitle"],$requestData["NewDescription"],
-               $requestData["DepartmentID"], $requestData["CourseID"]);
-               if ($dbAccess -> executeQuery ($sqlQuery,"iissii",$sqlParams)) {
-                 $result = new commandResult ("success");
+               $sqlParams = array($this->requestContent["NewCourseID"],$this->requestContent["NewDepartmentID"], $this->requestContent["NewTitle"],
+               $this->requestContent["NewDescription"],$this->requestContent["DepartmentID"], $this->requestContent["CourseID"]);
+               if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
+                 $commandResult = new commandResult ("success");
                }
                else {
-                 $result = new commandResult ("failed");
-                 $result->addValuePair ("Description","class already exists.");
+                 $commandResult = new commandResult ("failed");
+                 $commandResult->addValuePair ("Description","Database error.");
                }
+            }
+            else {
+              $commandResult = new commandResult ("failed");
+              $commandResult->addValuePair ("Description","Could not find class.");
             }
           }
 
           catch (Exception $e) {
-            $result = new commandResult ("systemError");
-            $result->addValuePair ("Description","Database failure.");
+            $commandResult = new commandResult ("systemError");
+            $commandResult->addValuePair ("Description","Database failure.");
           }
 
           // Return the result of the command.
           return $commandResult;
         }
+
     }
 
     //---------------------------------------------------------------//

@@ -1,22 +1,33 @@
 <?php
 /* --------------------------------------------------------------------*
- * TODO (Fill in file name here).php                                   *
+ * SearchCoursesCommand.php                                            *
  * --------------------------------------------------------------------*
- * Description - TODO (Class Description here)                         *
+ * Description - This class allows students to search for courses by a *
+ *                           given input string.                       *
  * --------------------------------------------------------------------*
  * Project: Classy Scheduler Web Server                                *
- * Author : TODO ( Your name here)                                     *
- * Date Of Creation: 10 - TODO (day here) - 2015                       *
+ * Author : McKim A. Jacob                                             *
+ * Date Of Creation: 10 - 25 - 2015                                    *
  * ------------------------------------------------------------------- */
 
 //===================================================================//
-//  NOTES & BUGS AS OF 10- TODO (day here) -2015                     //
+//  NOTES & BUGS AS OF 10- 25 -2015                                  //
 //===================================================================//
 /*
  *
  */
 
-class exampleCommand extends Command {
+
+  /* --------------------------------------------------------------------*
+   * Sample Request JSON                                                 *
+   * --------------------------------------------------------------------*
+   {
+     "ServiceID": "UpdateSchedule",
+     "searchPhrase": "CIS 350",
+   }
+  */
+
+class SearchCoursesCommand extends Command {
 
     //---------------------------------------------------------------//
     // Class Atributes                                               //
@@ -47,7 +58,7 @@ class exampleCommand extends Command {
       $this->requestContent = $requestData;
 
       // Create the new required database objects to preform task.
-      $this->dbAccess = new MySqlDatabaseTool("adminClient");
+      $this->dbAccess = new MySqlDatabaseTool("studentClient");
 
     }
 
@@ -76,7 +87,7 @@ class exampleCommand extends Command {
         // --- Variable Declarations  -------------------------------//
 
         /* @var $commands (Array) Used to cross check the request.   */
-        $commandParams = array ("DepartmentID", "CourseID", "Title", "Description");
+        $commandParams = array ("searchPhrase");
 
         /* @var $commandResult (commandResult) The result model.     */
         $commandResult;
@@ -105,7 +116,7 @@ class exampleCommand extends Command {
 
         else {
         $commandResult = new commandResult ("invalidData");
-        $commandResult->addValuePair ("Description","Invalid input parameters for AddCourse.");
+        $commandResult->addValuePair ("Description","Invalid input parameters for SearchCourses service.");
         }
 
     }

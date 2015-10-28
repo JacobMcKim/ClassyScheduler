@@ -1,0 +1,23 @@
+Handler-
+  Implement Communication with server
+  implement loadDefaultSearchBuff
+  Implement loadSearchedCourseBuffer
+  error resolution in addSectionToSched
+
+Section-
+  implement day checking within checkTimeConflict
+
+Course-
+  add checkTimeConflict to addSection
+
+TEST!!!
+  Course
+    constuctors
+    compare
+    addSection
+  Section
+    constrution
+    checkTimeConflict
+  Handler
+    construction
+    addSectionToSched

@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------*
- * APICommunicatorTest.php                                             *
+ * APICommunicatorTest.java                                            *
  * --------------------------------------------------------------------*
  *  Description - This class provides a sample implmentation of how to *
  *  use the APICommunicator class.                                     *

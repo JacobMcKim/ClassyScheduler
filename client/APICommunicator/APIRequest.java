@@ -132,7 +132,7 @@ public class APIRequest
     public boolean addRequestProperty(String keyName, Object value)
     {
         try {
-            keyValueList.append(keyName,value);
+            keyValueList.put(keyName,value);
             return true;
         }
         

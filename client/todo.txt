@@ -1,23 +1,16 @@
 Handler-
+  Integrate with UI
   Implement Communication with server
   implement loadDefaultSearchBuff
   Implement loadSearchedCourseBuffer
   error resolution in addSectionToSched
 
 Section-
-  implement day checking within checkTimeConflict
+  JSON array constructor
 
 Course-
-  add checkTimeConflict to addSection
+  JSON Array consrtuctor
 
 TEST!!!
-  Course
-    constuctors
-    compare
-    addSection
-  Section
-    constrution
-    checkTimeConflict
   Handler
-    construction
     addSectionToSched

@@ -3,7 +3,7 @@
 *
 * An entity used to reperesent what days of the week a section meets
 * Created by Zack Drescher
-* Last edited on 10.28.15 ZD
+* Last edited on 11.6.15 ZD
 ******************************************************************************
 * Todo:
 * Throw exception

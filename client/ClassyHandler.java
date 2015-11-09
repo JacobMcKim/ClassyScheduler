@@ -5,15 +5,14 @@
 * sections to and from the users current schedule.
 *
 * Created by Zack Drescher
-* Last edited on 10.28.15 ZD
+* Last edited on 11.08.15 ZD
 ******************************************************************************
 * Todo:
-* Add functionality
+* Integrate with UI
 * Implement Communication with server
 * implement loadDefaultSearchBuff
 * Implement loadSearchedCourseBuffer
 * error resolution in addSectionToSched
-* implement checking time conflicts in student schedule in addSectionToSched
 ******************************************************************************/
 import java.util.ArrayList;
 

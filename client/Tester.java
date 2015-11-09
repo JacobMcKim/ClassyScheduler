@@ -4,7 +4,7 @@
 * A class used to test various components of the client until we figure out a
 * unit testing tool.
 * Created by Zack Drescher
-* Last edited on 10.28.15 ZD
+* Last edited on 11.6.15 ZD
 ******************************************************************************
 * Todo:
 
@@ -29,40 +29,68 @@ public class Tester {
     WeeklySchedule mwf = new WeeklySchedule("MWF");
     WeeklySchedule th = new WeeklySchedule("TH");
 
+    System.out.println("MTWHF v MWF");
     if(mtwhf.checkConflict(mwf))
-      System.out.println("Conflict MTWHF v MWF detected");
+      System.out.println("passed");
     else
-      System.out.println("MTWHF v MWF went wrong");
+      System.out.println("failed");
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
 
+    System.out.println("MTWHF v TH");
     if(mtwhf.checkConflict(th))
-      System.out.println("Conflict MTWHF v th detected");
+      System.out.println("passed");
     else
-      System.out.println("MTWHF v th went wrong");
+      System.out.println("failed");
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
 
+    System.out.println("MWF v TH no conflict");
     if(!mwf.checkConflict(th))
-      System.out.println("No conflict mwf v th detected");
+      System.out.println("passed");
     else
-      System.out.println("mwf v th went wrong");
+      System.out.println("failed");
 
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
+    System.out.println("Section testing");
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
 
     Section s1 = new Section(cis350, 1, 1000, 1050, "MWF");
     Section s2 = new Section(cis350, 2, 1100, 1150, "MWF");
     Section tc1 = new Section(cis350, 3, 1000, 1050, "MWF");
 
+    System.out.println("check time and day conflict");
     if(s1.checkTimeConflict(tc1))
-      System.out.println("Conflict detected!!");
+      System.out.println("passed");
     else
-      System.out.println("failed to detect conflict");
+      System.out.println("failed");
 
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
+    System.out.println("Course testing");
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
+
+    System.out.println("Add section to course");
     if(cis350.addSection(s1) == 0)
-      System.out.println("s1 added!!!");
+      System.out.println("passed");
     else
-      System.out.println("s1 failed to add");
+      System.out.println("failed");
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
 
+    System.out.println("Add second section to course");
     if(cis350.addSection(s2) == 1)
-      System.out.println("s2 added!!!");
+      System.out.println("passed");
     else
-      System.out.println("s2 failed to add");
-  }
+      System.out.println("failed");
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
+    System.out.println("Add section with time conflict");
+    if(cis350.addSection(tc1) == -1)
+      System.out.println("passed");
+    else
+      System.out.println("failed");
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
 
+    System.out.println("Make sure section wasn't added");
+    if(cis350.getSectionList().size() == 2)
+      System.out.println("passed");
+    else
+      System.out.println("failed");
+  }
 }

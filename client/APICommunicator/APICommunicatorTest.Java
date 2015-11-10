@@ -52,13 +52,18 @@ public class APICommunicatorTest
             
             // 3. Get the response.
             theData = addCourseResp.getResponseList();
+            
+            // This is the server code just to make sure things went well.
             System.out.print("Response Code:");
             System.out.println(addCourseResp.getResponseType().toString());
             
+            // Checks the success based off one of the 4 types of responses.
             if (addCourseResp.getResponseType() == APIResultEnum.SUCCESS) {
                 System.out.println("System was able to add course.");
             }
             else {
+                
+                // Attempts to grab a peice of information from the data object.
                 try {
                     System.out.println(theData.getString("Description"));
                 }

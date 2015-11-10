@@ -35,7 +35,8 @@ public class APICommunicatorTest
         /* The response from the web server.                       */
         APIResponse addCourseResp = null;
         
-        ArrayList<Object> theData; 
+        /* The data result from the server.                        */
+        JSONObject theData; 
         
         // --- Main Routine ------------------------------------------//
         
@@ -51,20 +52,26 @@ public class APICommunicatorTest
             
             // 3. Get the response.
             theData = addCourseResp.getResponseList();
+            System.out.print("Response Code:");
+            System.out.println(addCourseResp.getResponseType().toString());
             
-            if (addCourseResp.getResponseSuccess()) {
+            if (addCourseResp.getResponseType() == APIResultEnum.SUCCESS) {
                 System.out.println("System was able to add course.");
             }
             else {
-                System.out.println("Course already exists.");
+                try {
+                    System.out.println(theData.getString("Description"));
+                }
+                catch (Exception e) {
+                    System.out.println("Unable to read the error Description.");
+                }
             }
             
         }
         else {
             System.out.println("The Request failed.");
         }
-        
-               
+              
     }
     
 }

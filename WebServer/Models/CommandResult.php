@@ -78,7 +78,8 @@ class CommandResult implements ICommandResult {
     /* A method called to add a value to the result data.*/
    public function addValuePair ($key, $value) {
      if ($key != NULL && $value != NULL) {
-       array_push($this->resultData, array($key => $value));
+       $this->resultData[$key] = $value;
+       #array_push($this->resultData, array($key => $value));
      }
 
    }

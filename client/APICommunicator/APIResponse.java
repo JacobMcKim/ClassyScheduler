@@ -34,13 +34,10 @@ public class APIResponse
     //---------------------------------------------------------------//
         
     /* The json list of property attributes that are apart of request.*/
-    private JSONObject keyValueList = new JSONObject();
+    private JSONObject keyValueList = null;
     
-    /* The list of data returned by the request from the server.      */ 
-    private ArrayList<Object> responseData;
-    
-    /* Whether or not the request was successful or not.              */ 
-    private boolean responseSuccess = false;
+    /* The type of success the service had.                           */ 
+    private APIResultEnum responseSuccess = APIResultEnum.UNKNOWN;
     
     //----------------------------------------------------------------//
     //  Class Constructor Definitions                                 //
@@ -55,8 +52,39 @@ public class APIResponse
      * @param The data read in from the response of the request.
      *
      *****************************************************************/
-    public APIResponse(int responseCode, byte [] responseData) 
+    public APIResponse (int responseCode, String responseData) 
     {
+        if (responseCode == 200) {
+            try {
+                keyValueList = new JSONObject(responseData);
+                
+                switch (keyValueList.getString("Response")) {
+                    case "success":
+                        responseSuccess = APIResultEnum.SUCCESS;
+                    break;
+                    
+                    case "failed":
+                        responseSuccess = APIResultEnum.FAILURE;
+                    break;
+                    
+                    case "invalidData":
+                        responseSuccess = APIResultEnum.INVALID_DATA;
+                    break;
+                    
+                    case "systemError":
+                        responseSuccess = APIResultEnum.SYSTEM_ERROR;
+                    break;
+                    
+                    default:
+                        responseSuccess = APIResultEnum.UNKNOWN;
+                    break;
+                    
+                }
+            }
+            catch (Exception e) {
+                
+            }
+        }
  
     }
     
@@ -68,48 +96,32 @@ public class APIResponse
     * A get method used to determine whether or not the response was 
     * successfuly completed at the server end.
     * 
-    * @return The type of HTTP Request that will be preformed.
+    * @return The enumerated response that was given back. 
     *
     ******************************************************************/
-    public boolean getResponseSuccess () {
+    public APIResultEnum getResponseType () {
         
-        return false;
+        return responseSuccess;
         
     }
     
     /******************************************************************
-    * A get method used to determine whether or not the response was 
-    * successfuly completed at the server end.
+    * A get method used to get the response data from the web server.
     * 
-    * @return The type of HTTP Request that will be preformed.
+    * @return A JSONObject containing the data of the request.
     *
     ******************************************************************/
-    public ArrayList<Object> getResponseList () {
+    public JSONObject getResponseList () {
+  
+        return keyValueList;
         
-        return null;
     }
     
     //----------------------------------------------------------------//
     //  Private Class Method Definitions                              //
     //----------------------------------------------------------------//
     
-    /******************************************************************
-    * A method used to convert the byte array data into an array list. 
-    * 
-    * @return Whether or not the creation of information was successful.
-    *
-    ******************************************************************/
-    private boolean compileResponseList (byte [] input) {
-        try {
-
-            return true;
-        }
-        
-        catch (Exception e) {
-            e.printStackTrace();
-            return false;
-        }
-        
-    }
+    /* N/A                                                            */
     
+    //----------------------------------------------------------------//
 }

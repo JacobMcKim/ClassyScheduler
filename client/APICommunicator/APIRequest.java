@@ -52,37 +52,39 @@ public class APIRequest
      *****************************************************************/
     public APIRequest(ServicesEnum serviceType)
     {
-        switch (serviceType) {
-        
-            case ADD_COURSE:
-                reqType = RequestTypeEnum.POST;
-                serviceID = "AddCourse";
-            break;
+        if (serviceType != null) {
+            switch (serviceType) {
             
-            case DELETE_COURSE:
-                reqType = RequestTypeEnum.POST;
-                serviceID = "DeleteCourse";
-            break;
-            
-            case SEARCH_COURSES:
-                reqType = RequestTypeEnum.POST;
-                serviceID = "SearchCourse";
-            break;
-            
-            case UPDATE_COURSE: 
-                reqType = RequestTypeEnum.POST;
-                serviceID = "UpdateCourse";
-            break;
-            
-            case UPDATE_SCHEDULE: 
-                reqType = RequestTypeEnum.POST;
-                serviceID = "UpdateSchedule";
-            break;
-            
-            default:
-                // TODO: figure out how to handle this.
-            break;
-            
+                case ADD_COURSE:
+                    reqType = RequestTypeEnum.POST;
+                    serviceID = "AddCourse";
+                break;
+                
+                case DELETE_COURSE:
+                    reqType = RequestTypeEnum.POST;
+                    serviceID = "DeleteCourse";
+                break;
+                
+                case SEARCH_COURSES:
+                    reqType = RequestTypeEnum.POST;
+                    serviceID = "SearchCourse";
+                break;
+                
+                case UPDATE_COURSE: 
+                    reqType = RequestTypeEnum.POST;
+                    serviceID = "UpdateCourse";
+                break;
+                
+                case UPDATE_SCHEDULE: 
+                    reqType = RequestTypeEnum.POST;
+                    serviceID = "UpdateSchedule";
+                break;
+                
+                default:
+                    // TODO: figure out how to handle this.
+                break;
+                
+            }
         }
         
         // Finally add the service id to the request string. 
@@ -131,13 +133,18 @@ public class APIRequest
     ******************************************************************/
     public boolean addRequestProperty(String keyName, Object value)
     {
-        try {
-            keyValueList.put(keyName,value);
-            return true;
+        if (value != null && keyName != null) {
+            try {
+                keyValueList.put(keyName,value);
+                return true;
+            }
+            
+            catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
         }
-        
-        catch (Exception e) {
-            e.printStackTrace();
+        else {
             return false;
         }
         
@@ -154,13 +161,18 @@ public class APIRequest
     ******************************************************************/
     public boolean RemoveProperty (String keyName)
     {
-        try {
-            keyValueList.remove(keyName);
-            return true;
+        if (keyName != null && keyName != "") {
+            try {
+                keyValueList.remove(keyName);
+                return true;
+            }
+            
+            catch (Exception e) {
+                e.printStackTrace();
+                return false;
+            }
         }
-        
-        catch (Exception e) {
-            e.printStackTrace();
+        else {
             return false;
         }
         

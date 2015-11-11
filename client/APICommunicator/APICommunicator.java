@@ -108,6 +108,7 @@ public class APICommunicator
         /* The json serialized data to pass off to the webservices.  */
         String requestData = null;
         
+        /* The json serialized data to pass off to the webservices.  */
         List<NameValuePair> params = new ArrayList<NameValuePair>();
         
         // --- Main Routine ------------------------------------------//
@@ -130,12 +131,11 @@ public class APICommunicator
                         params.add(new BasicNameValuePair("request",requestData.toString()));
                         reqObject.setEntity(new UrlEncodedFormEntity(params));
                         httpResp = connect.execute (reqObject);
-                        System.out.println("resp CODE: " + httpResp.getStatusLine().getStatusCode());
                     break;
                     
                     case GET:
                         // TODO: Add this in 10/26/2015
-                    break; 
+                        return false;
                 }
                 
                 return true;
@@ -163,7 +163,47 @@ public class APICommunicator
     *****************************************************************/
     public APIResponse getRequestResult () {
         
-        return null;
+        // --- Variable Declarations  -------------------------------//
+        
+        /* The buffer used to read in the response data.             */
+        StringBuffer bufferData = null;
+                
+        /* The input buffer of data the result was packaged in.      */
+        BufferedReader inDataReader = null;
+        
+        /* The a text line of input data.                            */
+        String line = "";
+        
+        /* The status code read back from the response.              */
+        int responseCode = 0;
+        
+        // --- Main Routine ------------------------------------------//
+        
+        // 1. Attempt to read in the data into the buffer.
+        if (httpResp != null) {
+            try {
+                inDataReader = new BufferedReader(new InputStreamReader
+                                    (httpResp.getEntity().getContent()));
+                bufferData = new StringBuffer();
+                
+                
+                while ((line = inDataReader.readLine()) != null) {
+                    bufferData.append(line);
+                }
+                
+                // 2. Create the response API object and return it.
+                responseCode = httpResp.getStatusLine().getStatusCode();
+                return new APIResponse(responseCode,bufferData.toString());
+            }
+        
+            catch (Exception e) {
+                return null;
+            }
+        }
+        
+        else {
+            return null;
+        }
         
     }
     

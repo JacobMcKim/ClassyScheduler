@@ -5,14 +5,21 @@
 * sections to and from the users current schedule.
 *
 * Created by Zack Drescher
-* Last edited on 11.08.15 ZD
+* Last edited on 11.09.15 ZD
 ******************************************************************************
 * Todo:
 * Integrate with UI
 * Implement Communication with server
 * implement loadDefaultSearchBuff
 * Implement loadSearchedCourseBuffer
+* Implement removeSectionFromSched
 * error resolution in addSectionToSched
+* Constructor
+*   -Intergrate loadDefaultSearchBuff
+* loadDefaultSearchBuff
+*   - Properly format Request
+*   - Load resoinse data
+*   - Implement server communication erroe handling.
 ******************************************************************************/
 import java.util.ArrayList;
 
@@ -47,9 +54,29 @@ public class ClassyHandler {
   public void addSectionToSched(Section s) {
 
     if(!studentSched.contains(s)) {
-      // TODO check time conflicts
       studentSched.add(s);
     }
     // TODO error resolution
+  }
+
+  public void loadDefaultSearchBuff() {
+
+    APICommunicator comm = new APICommunicator;
+    APIRequest req = new APIRequest(SEARCH_COURSES);
+
+    ArrayList<Object> data;
+    APIResponse resp;
+    // TODO: Properly format request
+    req.addRequestProperty("SearchTerm", "*");
+
+    if(comm.sendRequest(req)) {
+
+      resp = comm.getRequestResult();
+      data = resp.getResponseList();
+
+      // TODO: load results into searchbuffer
+    }else {
+      // TODO: server communication error handling
+    }
   }
 }

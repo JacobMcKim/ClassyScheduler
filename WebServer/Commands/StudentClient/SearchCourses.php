@@ -108,18 +108,19 @@ class SearchCoursesCommand extends Command {
 
           try {
 
+            // Get the search phrase.
             $searchPhrase = $this->requestContent["searchPhrase"];
 
             // 1. Select the type of data were working with.
             if ($searchPhrase == "*") {
-              $sqlQuery = 'SELECT * FROM courses';
+              $sqlQuery = 'SELECT * FROM course WHERE 1';
             }
             else if (preg_match('~^[a-zA-Z]{3} [0-9]{3}$~',$searchPhrase)) { // XXX XXX: CIS 350
-              $sqlQuery = 'SELECT * FROM courses WHERE cID = ? AND depID = ?';
+              $sqlQuery = 'SELECT * FROM course WHERE cID = ? AND depID = ?';
               $sqlParams = array(substr($searchPhrase,0,3),substr($searchPhrase,4,3));
             }
             else if ($searchPhrase != "") {
-              $sqlQuery = 'SELECT * FROM courses WHERE title LIKE ? OR description LIKE ?';
+              $sqlQuery = "SELECT * FROM course WHERE title LIKE '%?%' OR description LIKE '%?%'";
               $sqlParams = array($searchPhrase,$searchPhrase);
             }
 

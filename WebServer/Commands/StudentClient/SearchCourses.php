@@ -98,14 +98,42 @@ class SearchCoursesCommand extends Command {
         /* @var $sqlQuery (object) The query to execute on service.  */
         $sqlQuery = NULL;
 
+        /* @var $searchPhrase (String) The phrase to do the search.  */
+        $searchPhrase = NULL;
+
         // --- Main Routine ------------------------------------------//
 
         // Check if the request contains all necessary parameters.
         if ( $this->isValidContent ($this->requestContent, $commandParams) ) {
 
-          // TODO: 3. Brief Description of what is going to happen.
           try {
-            // TODO 4: Implement code.
+
+            $searchPhrase = $this->requestContent["searchPhrase"];
+
+            // 1. Select the type of data were working with.
+            if ($searchPhrase == "*") {
+              $sqlQuery = 'SELECT * FROM courses';
+            }
+            else if (preg_match('~^[a-zA-Z]{3} [0-9]{3}$~',$searchPhrase)) { // XXX XXX: CIS 350
+              $sqlQuery = 'SELECT * FROM courses WHERE cID = ? AND depID = ?';
+              $sqlParams = array(substr($searchPhrase,0,3),substr($searchPhrase,4,3));
+            }
+            else if ($searchPhrase != "") {
+              $sqlQuery = 'SELECT * FROM courses WHERE title LIKE ? OR description LIKE ?';
+              $sqlParams = array($searchPhrase,$searchPhrase);
+            }
+
+            // 2. Run the statement.
+            if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
+
+              // 3. get the results.
+
+              // 4. Per result pull all the sections related to the course.
+
+              // 5. Build the response of classes.
+
+            }
+
           }
 
           catch (Exception $e) {

@@ -111,7 +111,7 @@ class RequestManager Implements IController {
           case "SearchCourse" :
             $iCommand = new SearchCourseCommand ($requestData);
             break;
-          case "UpdateCourse":
+          case "UpdateSchedule":
             $iCommand = new UpdateScheduleCommand ($requestData);
             break;
           default: // Service requested not found.

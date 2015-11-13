@@ -89,7 +89,7 @@ class UdpateScheduleCommand extends Command {
         // --- Variable Declarations  -------------------------------//
 
         /* @var $commands (Array) Used to cross check the request.   */
-        $commandParams = array ("SectionCodeID", "Operation");
+        $commandParams = array ("scheduleID","sectionCodeID", "operation");
 
         /* @var $commandResult (commandResult) The result model.     */
         $commandResult;
@@ -100,6 +100,9 @@ class UdpateScheduleCommand extends Command {
         /* @var $sqlQuery (object) The query to execute on service.  */
         $sqlQuery = NULL;
 
+        /* @var $updateParams (array) The update query param list.   */
+        $updateParams;
+
         // --- Main Routine ------------------------------------------//
 
         // Check if the request contains all necessary parameters.
@@ -107,17 +110,60 @@ class UdpateScheduleCommand extends Command {
 
           // Depending on the operation, either add or drop course from schedule.
           try {
-             // Add course.
-             if ($this->requestContent["Operation"] == "add") {
-                # TODO: Validate user schedule and validate seat available.
+              $sqlQuery = 'SELECT * FROM scheduledItem WHERE scheduleID = ? AND sectionCode = ?';
+              $sqlParams = array($this->requestContent["scheduleID"],$this->requestContent["sectionCodeID"])
+              if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
+                $result = $this->dbAccess->getResults();
+              }
+              else {
+                $commandResult = new commandResult ("systemError");
+                $commandResult->addValuePair ("Description","Database failure.");
+                return $commandResult;
+              }
+
+             // Determine which activity were preforming.
+             if ($this->requestContent["operation"] == "add" && count($result) == 0) {
+               $sqlQuery = 'INSERT INTO scheduleitem (scheduleID,sectionCode) VALUES(?,?)';
+               $sqlParams = array($this->requestContent["scheduleID"],$this->requestContent["sectionCodeID"]);
+               $updateParams = array($this->requestContent["sectionCodeID"]),'-','+', $this->requestContent["scheduleID"];
              }
-             elseif ($this->requestContent["Operation"] == "drop" ) {
-               # TODO: Valdiate user has course and drop.
+             else if ($this->requestContent["operation"] == "drop" && count($result) > 0) {
+               $sqlQuery = 'DELETE FROM scheduleitem WHERE scheduleID = ? AND sectionCode = ?';
+               $sqlParams = array($this->requestContent["scheduleID"],$this->requestContent["sectionCodeID"]);
+               $updateParams = array($this->requestContent["sectionCodeID"]),'+','-', $this->requestContent["scheduleID"];
              }
-             else { // Invalid operation.
+             else {
                $commandResult = new commandResult ("invalidData");
                $commandResult->addValuePair ("Description","Invalid operation defined for command.");
+               return $commandResult;
              }
+
+             // Update the seat and hours recorded for the schedule.
+             if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
+               $sqlQuery = 'UPDATE studentschedule AS ss
+                  JOIN section AS s ON
+                    s.sectionCode = ?
+                  JOIN timeblock AS t
+                    ON t.timeblockID = s.timeblockID
+                SET
+                  s.seatsOpen = s.seatsOpen ? 1,
+                  ss.creditHours = ss.creditHours ? t.creditHours
+                WHERE ss.scheduleID = ?';
+                $sqlParams = $updateParams;
+
+                // Respond with a pass.
+                if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
+                  $commandResult = new commandResult ("success");
+                }
+                else {
+                  $commandResult = new commandResult ("systemError");
+                  $commandResult->addValuePair ("Description","Database failure.");
+                }
+              }
+              else {
+                $commandResult = new commandResult ("systemError");
+                $commandResult->addValuePair ("Description","Database failure.");
+              }
           }
 
           catch (Exception $e) {
@@ -125,10 +171,9 @@ class UdpateScheduleCommand extends Command {
             $commandResult->addValuePair ("Description","Database failure.");
           }
         }
-
         else {
-        $commandResult = new commandResult ("invalidData");
-        $commandResult->addValuePair ("Description","Invalid input parameters for UpdateSchedule Service.");
+          $commandResult = new commandResult ("invalidData");
+          $commandResult->addValuePair ("Description","Invalid input parameters for UpdateSchedule Service.");
         }
 
     }

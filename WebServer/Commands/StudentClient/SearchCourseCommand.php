@@ -119,7 +119,7 @@ class SearchCourseCommand extends Command {
             $searchPhrase = $this->requestContent["searchPhrase"];
 
             // 1. Select the type of data were working with.
-            if ($searchPhrase == "*") {
+            if ($searchPhrase == "*") { // Select everything.
               $sqlQuery = 'SELECT courseCode FROM course WHERE 1';
               $sqlParams = array();
             }
@@ -127,9 +127,19 @@ class SearchCourseCommand extends Command {
               $sqlQuery = 'SELECT c.courseCode FROM course AS c JOIN department AS d ON d.depName = ? WHERE c.cID = ?';
               $sqlParams = array(substr($searchPhrase,0,3),substr($searchPhrase,4,3));
             }
+            else if (preg_match('~^[a-zA-Z]{3}$~',$searchPhrase)) { // XXX: CIS
+              $sqlQuery = 'SELECT c.courseCode FROM course AS c JOIN department AS d ON d.depName = ? WHERE c.dNum = d.dID';
+              $sqlParams = array($searchPhrase);
+            }
             else if ($searchPhrase != "") {
-              $sqlQuery = "SELECT courseCode FROM course WHERE title LIKE '%?%' OR description LIKE '%?%'";
+              $sqlQuery = "SELECT courseCode FROM course WHERE title LIKE ? OR description LIKE ?";
+              $searchPhrase = "%" . $searchPhrase . "%";
               $sqlParams = array($searchPhrase,$searchPhrase);
+            }
+            else {
+              $commandResult = new commandResult ("failed");
+              $commandResult->addValuePair ("Description","No classes found.");
+              return $commandResult;
             }
 
             // 2. Run the statement.
@@ -140,7 +150,7 @@ class SearchCourseCommand extends Command {
 
               if ($courseList != null) {
                 $sqlQuery = "SELECT c.*, d.depName, s.sectionCode, s.sectionID, s.seats,s.seatsOpen,
-                            f.firstName,f.lastName, b.buldingName, l.classroom, t.meetDays, t.creditHours, t.startTime, t.endTime
+                            f.firstName,f.lastName, b.buildingName, l.classroom, t.meetDays, t.creditHours, t.startTime, t.endTime
                             FROM course AS c
                                    JOIN department AS d
                                        ON c.dNum = d.dID
@@ -156,13 +166,13 @@ class SearchCourseCommand extends Command {
                                        ON t.timeblockID = s.sectionID
                             WHERE c.courseCode = ?";
 
-                $sqlParams = array ($this->requestContent["semID"],$courseCode);
                 $courseResults = array();
 
                 // 4. Per result pull all the sections related to the course.
                 foreach ($courseList as &$courseCode) {
 
                   // Execute the search query.
+                  $sqlParams = array ($this->requestContent["semID"],$courseCode["courseCode"]);
                   if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
 
                     // 5. Check and see if we have sections.
@@ -173,28 +183,28 @@ class SearchCourseCommand extends Command {
                       // 6. Per section populate section data.
                       foreach($sectionList as &$resSec) {
                          $section = array ();
-                         $section.append("sectionID" => $resSec["sectionID"]);
-                         $section.append("sectionCode" => $resSec["sectionCode"]);
-                         $section.append("profFirst" => $resSec["firstName"]);
-                         $section.append("profLast" => $resSec["lastName"]);
-                         $section.append("startTime" => $resSec["startTime"]);
-                         $section.append("endTime" => $resSec["endTime"]);
-                         $section.append("meetDays" => $resSec["meetDays"]);
-                         $section.append("building" => $resSec["buildingName"]);
-                         $section.append("room" => $resSec["classroom"]);
-                         $section.append("seats" => $resSec["seats"]);
-                         $section.append("seatsOpen" => $resSec["seatsOpen"]);
-                         $sectionArray.append($section);
+                         $section["sectionID"] = $resSec["sectionID"];
+                         $section["sectionCode"] = $resSec["sectionCode"];
+                         $section["profFirst"] = $resSec["firstName"];
+                         $section["profLast"] = $resSec["lastName"];
+                         $section["startTime"] = $resSec["startTime"];
+                         $section["endTime"] = $resSec["endTime"];
+                         $section["meetDays"] = $resSec["meetDays"];
+                         $section["building"] = $resSec["buildingName"];
+                         $section["room"] = $resSec["classroom"];
+                         $section["seats"] = $resSec["seats"];
+                         $section["seatsOpen"] = $resSec["seatsOpen"];
+                         array_push($sectionArray,$section);
                       }
 
                       // Populate the course data.
-                      $course.append ("department",$sectionList[0]["depName"]);
-                      $course.append ("courseID",$sectionList[0]["cID"]);
-                      $course.append ("title",$sectionList[0]["title"]);
-                      $course.append ("Description",$sectionList[0]["description"]);
-                      $course.append ("creditHours",$sectionList[0]["description"]);
-                      $course.append("sections",$sectionArray);
-                      $courseResults.append($course);
+                      $course["department"] = $sectionList[0]["depName"];
+                      $course["courseID"] = $sectionList[0]["cID"];
+                      $course["title"] = $sectionList[0]["title"];
+                      $course["Description"] = $sectionList[0]["description"];
+                      $course["creditHours"] = $sectionList[0]["creditHours"];
+                      $course["sections"] = $sectionArray;
+                      array_push($courseResults,$course);
                     } // end if check for null semester result.
 
                   } // end if check for bad request for sections.
@@ -207,9 +217,8 @@ class SearchCourseCommand extends Command {
 
                 // Append the data back if we have something.
                 if (count($courseResults) > 0) {
-                  var_dump($commandResult);
                   $commandResult = new commandResult ("success");
-                  $commandResult->addValuePair ("courseList",$commandResult);
+                  $commandResult->addValuePair ("courseList",$courseResults);
                 }
                 else {
                   $commandResult = new commandResult ("failed");
@@ -239,6 +248,9 @@ class SearchCourseCommand extends Command {
         $commandResult = new commandResult ("invalidData");
         $commandResult->addValuePair ("Description","Invalid input parameters for SearchCourses service.");
         }
+
+ // Return the command result.
+ return $commandResult;
 
     }
 

@@ -24,10 +24,11 @@
    {
      "ServiceID": "UpdateSchedule",
      "searchPhrase": "CIS 350",
+     "semID" : 1
    }
   */
 
-class SearchCoursesCommand extends Command {
+class SearchCourseCommand extends Command {
 
     //---------------------------------------------------------------//
     // Class Atributes                                               //
@@ -87,7 +88,7 @@ class SearchCoursesCommand extends Command {
         // --- Variable Declarations  -------------------------------//
 
         /* @var $commands (Array) Used to cross check the request.   */
-        $commandParams = array ("searchPhrase");
+        $commandParams = array ("searchPhrase","semID");
 
         /* @var $commandResult (commandResult) The result model.     */
         $commandResult;
@@ -117,9 +118,10 @@ class SearchCoursesCommand extends Command {
             // 1. Select the type of data were working with.
             if ($searchPhrase == "*") {
               $sqlQuery = 'SELECT courseCode FROM course WHERE 1';
+              $sqlParams = array();
             }
             else if (preg_match('~^[a-zA-Z]{3} [0-9]{3}$~',$searchPhrase)) { // XXX XXX: CIS 350
-              $sqlQuery = 'SELECT courseCode FROM course WHERE cID = ? AND depID = ?';
+              $sqlQuery = 'SELECT c.courseCode FROM course AS c JOIN department AS d ON d.depName = ? WHERE c.cID = ?';
               $sqlParams = array(substr($searchPhrase,0,3),substr($searchPhrase,4,3));
             }
             else if ($searchPhrase != "") {
@@ -148,10 +150,22 @@ class SearchCoursesCommand extends Command {
                           WHERE c.courseCode = ?";
 
               // 3. get the results.
-              $courseList = getResults();
-              var_dump($coursList);
+              $courseList = $this->dbAccess->getResults();
+              var_dump($courseList);
 
               // 4. Per result pull all the sections related to the course.
+              foreach ($courseList as &$courseCode) {
+                echo ($courseCode);
+                $sqlParams = array ($this->requestContent["semID"],$courseCode);
+                if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
+                  $sectionList = $this->dbAccess->getResults();
+                  var_dump($sectionList);
+                }
+                else {
+                  $commandResult = new commandResult ("systemError");
+                  $commandResult->addValuePair ("Description","Database failure.");
+                }
+              }
 
               // 5. Build the response of classes.
 

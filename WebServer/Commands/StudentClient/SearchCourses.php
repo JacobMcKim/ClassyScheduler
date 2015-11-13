@@ -92,6 +92,9 @@ class SearchCoursesCommand extends Command {
         /* @var $commandResult (commandResult) The result model.     */
         $commandResult;
 
+        /* @var $courseList (Array) Used to grab sections data.      */
+        $courseList;
+
         /* @var $result (object) The output of PDO sql executes.     */
         $result = NULL;
 
@@ -113,21 +116,40 @@ class SearchCoursesCommand extends Command {
 
             // 1. Select the type of data were working with.
             if ($searchPhrase == "*") {
-              $sqlQuery = 'SELECT * FROM course WHERE 1';
+              $sqlQuery = 'SELECT courseCode FROM course WHERE 1';
             }
             else if (preg_match('~^[a-zA-Z]{3} [0-9]{3}$~',$searchPhrase)) { // XXX XXX: CIS 350
-              $sqlQuery = 'SELECT * FROM course WHERE cID = ? AND depID = ?';
+              $sqlQuery = 'SELECT courseCode FROM course WHERE cID = ? AND depID = ?';
               $sqlParams = array(substr($searchPhrase,0,3),substr($searchPhrase,4,3));
             }
             else if ($searchPhrase != "") {
-              $sqlQuery = "SELECT * FROM course WHERE title LIKE '%?%' OR description LIKE '%?%'";
+              $sqlQuery = "SELECT courseCode FROM course WHERE title LIKE '%?%' OR description LIKE '%?%'";
               $sqlParams = array($searchPhrase,$searchPhrase);
             }
 
             // 2. Run the statement.
             if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
 
+              $sqlQuery = "SELECT c.cID, d.depName, s.sectionCode, s.sectionID, s.seats,s.seatsOpen,
+                          f.firstName,f.lastName, b.buldingName, l.classroom, t.meetDays, t.creditHours, t.startTime, t.endTime
+                          FROM course AS c
+                                 JOIN department AS d
+                                     ON c.dNum = d.dID
+                                 JOIN section AS s
+                                     ON s.courseCode = c.courseCode AND s.semesterCode = ?
+                                 JOIN faculty AS f
+                                     ON f.facultyID = s.facultyID
+                                 JOIN location AS l
+                                     ON l.locationID = s.locationID
+                                 JOIN building AS b
+                                     ON b.buildingID = l.buildingID
+                                 JOIN timeblock AS t
+                                     ON t.timeblockID = s.sectionID
+                          WHERE c.courseCode = ?";
+
               // 3. get the results.
+              $courseList = getResults();
+              var_dump($coursList);
 
               // 4. Per result pull all the sections related to the course.
 

@@ -2,8 +2,12 @@ Handler-
   Integrate with UI
   Implement Communication with server
   implement loadDefaultSearchBuff
-  Implement loadSearchedCourseBuffer
   error resolution in addSectionToSched
+  Constructor
+    -Intergrate loadDefaultSearchBuff
+  loadDefaultSearchBuff
+    - Load resoinse data
+    - Implement server communication error handling.
 
 Section-
   JSON array constructor

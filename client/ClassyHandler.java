@@ -5,7 +5,7 @@
 * sections to and from the users current schedule.
 *
 * Created by Zack Drescher
-* Last edited on 11.09.15 ZD
+* Last edited on 11.11.15 ZD
 ******************************************************************************
 * Todo:
 * Integrate with UI
@@ -17,7 +17,6 @@
 * Constructor
 *   -Intergrate loadDefaultSearchBuff
 * loadDefaultSearchBuff
-*   - Properly format Request
 *   - Load resoinse data
 *   - Implement server communication erroe handling.
 ******************************************************************************/
@@ -62,12 +61,11 @@ public class ClassyHandler {
   public void loadDefaultSearchBuff() {
 
     APICommunicator comm = new APICommunicator;
-    APIRequest req = new APIRequest(SEARCH_COURSES);
+    APIRequest req = new APIRequest(ServciesEnum.SEARCH_COURSES);
 
-    ArrayList<Object> data;
+    JSONObject data;
     APIResponse resp;
-    // TODO: Properly format request
-    req.addRequestProperty("SearchTerm", "*");
+    req.addRequestProperty("searchPhrase", "*");
 
     if(comm.sendRequest(req)) {
 

@@ -108,6 +108,12 @@ class RequestManager Implements IController {
           case "ForgotPasswords" :
             $iCommand = new ForgotPasswordsCommand ($requestData);
             break; */
+          case "SearchCourse" :
+            $iCommand = new SearchCourseCommand ($requestData);
+            break;
+          case "UpdateSchedule":
+            $iCommand = new UpdateScheduleCommand ($requestData);
+            break;
           default: // Service requested not found.
             $commandFound = false;
         }

@@ -70,11 +70,11 @@ class MySqlDatabaseTool Implements IDatabaseTool {
   function __construct($connectionType) {
 
     if ($connectionType == "studentClient") {
-      $this->user = "student";
+      $this->user = "studentClient";
       $this->password = "JvDBDzQ6TTwQxXU9";
     }
     elseif ($connectionType == "adminClient") {
-      $this->user = "admin";
+      $this->user = "adminClient";
       $this->password = "nPmCPeWu3nC84xCF";
     }
     else {

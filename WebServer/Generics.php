@@ -33,6 +33,10 @@ require_once "Commands/AdminClient/AddCourseCommand.php";
 require_once "Commands/AdminClient/DeleteCourseCommand.php";
 require_once "Commands/AdminClient/UpdateClassCommand.php";
 
+// ## Student Panel commands
+require_once "Commands/StudentClient/SearchCourseCommand.php";
+require_once "Commands/StudentClient/UpdateScheduleCommand.php";
+
 // Controllers
 require_once "Controllers/IController.php";
 require_once "Controllers/RequestManager.php";

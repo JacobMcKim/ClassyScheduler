@@ -69,6 +69,28 @@ public class ClassyHandler {
   public ArrayList<Course> getSearchBuffer() { return searchBuffer;}
   public ArrayList<Section> getStudentSched() { return studentSched;}
 
+  // Getter methods that return search buffer and student sched in the form of
+  // arrays
+  public Course[] getArraySearchBuf() {
+
+    Course[] temp = new Course[searchBuffer.size()];
+
+    for(int i = 0; i < searchBuffer.size(); i++) {
+      temp[i] = searchBuffer.get(i);
+    }
+    return temp;
+  }
+
+  public Section[] getArrayStuSched() {
+
+    Section[] temp = new Section[studentSched.size()];
+
+    for(int i = 0; i < studentSched.size(); i++) {
+      temp[i] = studentSched.get(i);
+    }
+    return temp;
+  }
+
   // TODO implement loadDefaultSearchBuff
   public void loadDefaultSearchBuff() {
 

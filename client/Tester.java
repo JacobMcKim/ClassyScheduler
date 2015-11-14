@@ -100,7 +100,7 @@ public class Tester {
     System.out.println("Handler testing");
     System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
 
-    System.out.println("Constructor Test");
+    System.out.println("List Constructor Test");
     Course cis263 = new Course(1, 263, "Data Structures", "This is a class.");
     Section s3 = new Section(cis263, 1, 1000, 1050, "MWF");
     Section s4 = new Section(cis263, 2, 1100, 1150, "MWF");
@@ -125,6 +125,24 @@ public class Tester {
       System.out.println("failed");
 
 
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
+    System.out.println("studentSched properly instantiated");
+    if(classy.getStudentSched().size() == sList.size())
+      System.out.println("passed");
+    else
+      System.out.println("failed");
+
+
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
+    System.out.println("Default Test Constructor test");
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
+
+    ClassyHandler classy2 = new ClassyHandler(1);
+    System.out.println("Search Buffer properly instantiated");
+    if(classy.getSearchBuffer().size() == cList.size())
+      System.out.println("passed");
+    else
+      System.out.println("failed");
     System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
     System.out.println("studentSched properly instantiated");
     if(classy.getStudentSched().size() == sList.size())

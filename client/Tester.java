@@ -4,7 +4,7 @@
 * A class used to test various components of the client until we figure out a
 * unit testing tool.
 * Created by Zack Drescher
-* Last edited on 11.6.15 ZD
+* Last edited on 11.14.15 ZD
 ******************************************************************************
 * Todo:
 
@@ -17,6 +17,8 @@
 *  construction
 *  addSectionToSched
 ******************************************************************************/
+
+import java.util.ArrayList;
 
 public class Tester {
 
@@ -63,10 +65,10 @@ public class Tester {
     else
       System.out.println("failed");
 
+
     System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
     System.out.println("Course testing");
     System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
-
     System.out.println("Add section to course");
     if(cis350.addSection(s1) == 0)
       System.out.println("passed");
@@ -92,5 +94,43 @@ public class Tester {
       System.out.println("passed");
     else
       System.out.println("failed");
+
+
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
+    System.out.println("Handler testing");
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
+
+    System.out.println("Constructor Test");
+    Course cis263 = new Course(1, 263, "Data Structures", "This is a class.");
+    Section s3 = new Section(cis263, 1, 1000, 1050, "MWF");
+    Section s4 = new Section(cis263, 2, 1100, 1150, "MWF");
+
+    cis263.addSection(s3);
+    cis263.addSection(s4);
+
+    ArrayList<Course> cList = new ArrayList<Course>();
+    cList.add(cis350);
+    cList.add(cis263);
+
+    ArrayList<Section> sList = new ArrayList<Section>();
+    sList.add(s1);
+
+    ClassyHandler classy = new ClassyHandler(cList, sList);
+
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
+    System.out.println("Search Buffer properly instantiated");
+    if(classy.getSearchBuffer().size() == cList.size())
+      System.out.println("passed");
+    else
+      System.out.println("failed");
+
+
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
+    System.out.println("studentSched properly instantiated");
+    if(classy.getStudentSched().size() == sList.size())
+      System.out.println("passed");
+    else
+      System.out.println("failed");
+
   }
 }

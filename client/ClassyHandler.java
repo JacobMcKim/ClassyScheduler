@@ -5,7 +5,7 @@
 * sections to and from the users current schedule.
 *
 * Created by Zack Drescher
-* Last edited on 11.11.15 ZD
+* Last edited on 11.14.15 ZD
 ******************************************************************************
 * Todo:
 * Integrate with UI
@@ -34,8 +34,15 @@ public class ClassyHandler {
     studentSched = new ArrayList<Section>();
   }
 
+  //Creates a hadler with the given searchBuffer and studentSched
+  public ClassyHandler(ArrayList<Course> courseL, ArrayList<Section> sched) {
+
+    searchBuffer = courseL;
+    studentSched = sched;
+  }
+
   public ArrayList<Course> getSearchBuffer() { return searchBuffer;}
-  public ArrayList<String> getStudentSched() { return studentSched;}
+  public ArrayList<Section> getStudentSched() { return studentSched;}
 
   // TODO implement loadDefaultSearchBuff
   public void loadDefaultSearchBuff() {
@@ -57,7 +64,7 @@ public class ClassyHandler {
     }
     // TODO error resolution
   }
-
+/*
   public void loadDefaultSearchBuff() {
 
     APICommunicator comm = new APICommunicator;
@@ -77,4 +84,5 @@ public class ClassyHandler {
       // TODO: server communication error handling
     }
   }
+  */
 }

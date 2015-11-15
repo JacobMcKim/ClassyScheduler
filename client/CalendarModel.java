@@ -12,6 +12,8 @@ package packageCal;
 import java.util.*;
 import java.awt.*;
 
+import javax.swing.DefaultListModel;
+
 public class CalendarModel {
 
 	/** Sets 2-dimensional array for calendar */
@@ -29,6 +31,8 @@ public class CalendarModel {
 	/** List of taken time slots **/
 	private ArrayList<Point> takenSlots;
 
+	DefaultListModel<Course> model = new DefaultListModel<Course>();
+	
 	/****************************************
 	* Constructor for setting up new calendar
 	****************************************/
@@ -93,6 +97,7 @@ public class CalendarModel {
 	*************************************/
 	public void addClass(Course c){
 		registeredCourses.add(c);
+		model.addElement(c);
 	}
 	
 	/*************************************
@@ -101,4 +106,13 @@ public class CalendarModel {
 	public int registeredClassSize(){
 		return registeredCourses.size();
 	}
+	
+	/*************************************
+	 * 
+	 * @return list of registered courses
+	 ************************************/
+	public  DefaultListModel<Course> getModelList(){
+		return model;
+	}
+	 
 }

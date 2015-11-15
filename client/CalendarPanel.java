@@ -31,7 +31,7 @@ import packageCal.Cell;
 public class CalendarPanel extends JPanel{
 
 	/** Buttons for GUI **/
-	private JButton addClass, startOver;
+	private JButton addClass, startOver, searchButton;
 	
 	/** Size of screen **/
 	Dimension screenSize;
@@ -81,7 +81,15 @@ public class CalendarPanel extends JPanel{
 	/** X-Coordinate of calendar cell **/
 	int x;
 	
+	/** List of sections within a course **/
 	DefaultListModel<Section> secList;
+	
+	DefaultListModel<Course> searchCourse;
+	
+	/** Searches classes **/
+	JTextField search;
+	
+	Course c;
 
 	/** Creates object for handler **/
 	private ClassyHandler classy;
@@ -121,8 +129,11 @@ public class CalendarPanel extends JPanel{
 		searchPanel = new JPanel();
 		searchPanel.setPreferredSize(new Dimension((screenSize.width / 5), (screenSize.height /8)));
 		searchPanel.setBackground(Color.gray);
-		searchLabel = new JLabel("Search Box goes here");
-		searchPanel.add(searchLabel);
+		search = new JTextField("Search bar");
+		searchPanel.add(search);
+		search.addActionListener(new SearchListener());
+		searchButton = new JButton("Search");
+		searchButton.addActionListener(new ButtonListener());
 		leftPanel.add(searchPanel);
 
 		//LEFT PANEL-->Course Panel
@@ -222,7 +233,6 @@ public class CalendarPanel extends JPanel{
 		displayCalendar();
 				
 		//RIGHT PANEL 
-		//TODO Make JTextField for Description of classes
 		rightLabel = new JLabel ("Description of Course");
 		rightPanel = new JPanel();
 		rightPanel.setPreferredSize(new Dimension((screenSize.width / 5), screenSize.height));
@@ -289,7 +299,17 @@ public class CalendarPanel extends JPanel{
 			}
 		}
 	}
-	
+	private class SearchListener implements ActionListener{
+		public void actionPerformed(ActionEvent e){
+			
+			String input = search.getText();
+//			if(input.equals(c.getTitle())){
+//				searchCourse = new DefaultListModel<Course>();
+//				searchCourse.addElement(c);
+//				list = new JList<Course>(searchCourse);
+//			}
+		}
+	}
 	/*******************************************************
 	 *Represents a listener for list of courses 
 	 * 
@@ -316,39 +336,41 @@ public class CalendarPanel extends JPanel{
 		// Displays available and taken cells on calendar
 		//-------------------------------------------------------
 		public void valueChanged (ListSelectionEvent event){
-			String text = listSec.getSelectedValue().getMeetings();
-			String []meetD = text.split("");
-			//y-coordinates of cells
-			y = new ArrayList<Integer>();
-			//finds weekday meeting times and adds to y-coordinates
-			for (int i=0; i<meetD.length; i++){
-				if (meetD[i].equals("M"))
-					y.add(1);
-				else if (meetD[i].equals("T"))
-					y.add(2);
-				else if (meetD[i].equals("W"))
-					y.add(3);
-				else if (meetD[i].equals("H"))
-					y.add(4);
-				else if (meetD[i].equals("F"))
-					y.add(5);
-			}
-			x = 0;
-			//section start time
-			int start = listSec.getSelectedValue().getSTime();
-			//finds x-coordinate for calendar cells
-			for (int i=800; i<=2000; i+=100)
-				if(start == i)
-					x = (i-700) /100;
-			//checks if cell with coordinates is available and changes background color
-			for (int i = 0; i< y.size(); i++){
-				if(iCalendar[x][y.get(i)] == Cell.EMPTY){
-//					calendar[x][y.get(i)].add(new JLabel("AVAILABLE"));
-					calendar[x][y.get(i)].setBackground(Color.green);
+			if (secList.isEmpty() == false && listSec.isSelectionEmpty() == false){
+				String text = listSec.getSelectedValue().getMeetings();
+				String []meetD = text.split("");
+				//y-coordinates of cells
+				y = new ArrayList<Integer>();
+				//finds weekday meeting times and adds to y-coordinates
+				for (int i=0; i<meetD.length; i++){
+					if (meetD[i].equals("M"))
+						y.add(1);
+					else if (meetD[i].equals("T"))
+						y.add(2);
+					else if (meetD[i].equals("W"))
+						y.add(3);
+					else if (meetD[i].equals("H"))
+						y.add(4);
+					else if (meetD[i].equals("F"))
+						y.add(5);
 				}
-				else{
-					calendar[x][y.get(i)].setBackground(Color.red);
-//					calendar[x][y.get(i)].add(new JLabel("TAKEN"));
+				x = 0;
+				//section start time
+				int start = listSec.getSelectedValue().getSTime();
+				//finds x-coordinate for calendar cells
+				for (int i=800; i<=2000; i+=100)
+					if(start == i)
+						x = (i-700) /100;
+				//checks if cell with coordinates is available and changes background color
+				for (int i = 0; i< y.size(); i++){
+					if(iCalendar[x][y.get(i)] == Cell.EMPTY){
+//						calendar[x][y.get(i)].add(new JLabel("AVAILABLE"));
+						calendar[x][y.get(i)].setBackground(Color.green);
+					}
+					else{
+						calendar[x][y.get(i)].setBackground(Color.red);
+//						calendar[x][y.get(i)].add(new JLabel("TAKEN"));
+					}
 				}
 			}
 		}

@@ -15,9 +15,12 @@ package packageCal;
 * Make action event for StartOver button 
 ******************************************************************************/
 import java.awt.*;
+
 import packageCal.Course;
+
 import java.awt.event.*;
 import java.util.*;
+
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
@@ -66,6 +69,9 @@ public class CalendarPanel extends JPanel{
 	/** List of Sections **/
 	private JList<Section> listSec;
 	
+	/** Description of Course **/
+	JTextField description;
+	
 	/** List of Registered Courses **/
 	private JList<Course> webRegistered;
 	
@@ -74,6 +80,8 @@ public class CalendarPanel extends JPanel{
 	
 	/** X-Coordinate of calendar cell **/
 	int x;
+	
+	DefaultListModel<Section> secList;
 
 	/** Creates object for handler **/
 	private ClassyHandler classy;
@@ -84,14 +92,15 @@ public class CalendarPanel extends JPanel{
 	public CalendarPanel(){
 
 		classy = new ClassyHandler(1); 
+		cal = new CalendarModel();
+		secList = new DefaultListModel<Section>();
 		list = new JList<Course>(classy.getArraySearchBuf());
-		listSec = new JList<Section>(classy.getArrayStuSched());
+		listSec = new JList<Section>(secList);
+		webRegistered = new JList<Course>(cal.getModelList());
 		 
 		//size for calendar panel
 		rows = 15;
 		columns = 8;
-		
-		cal = new CalendarModel();
 		
 		//sets up overall CalendarPanel
 		setLayout (new BorderLayout());
@@ -147,13 +156,11 @@ public class CalendarPanel extends JPanel{
 
 		
 		//LEFT PANEL-->Web Registered Panel
-		//TODO Add added courses to JList
 		registeredList = new JPanel();
 		registeredList.setPreferredSize(new Dimension((screenSize.width / 5), (screenSize.height /4)));
 		registeredList.setBackground(Color.blue);
 		registeredLabel = new JLabel("Web Registered");
 		registeredList.add(registeredLabel);
-//		webRegistered = new 
 		JScrollPane listScroller3 = new JScrollPane(webRegistered);
 		listScroller3.setPreferredSize(new Dimension(220, 60));
 		listScroller3.setAlignmentX(LEFT_ALIGNMENT);
@@ -219,12 +226,17 @@ public class CalendarPanel extends JPanel{
 		rightLabel = new JLabel ("Description of Course");
 		rightPanel = new JPanel();
 		rightPanel.setPreferredSize(new Dimension((screenSize.width / 5), screenSize.height));
+		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 		rightPanel.setBackground(Color.gray);
 		rightPanel.add(rightLabel);		
-		setPreferredSize(new Dimension(screenSize.width, screenSize.height));
-		setBackground(Color.gray);
+		rightPanel.add(Box.createRigidArea(new Dimension(0, 35)));
+		description = new JTextField("Course description goes here");
+		rightPanel.add(description);
+		
 		
 		//Overall CalendarPanel Layout
+		setPreferredSize(new Dimension(screenSize.width, screenSize.height));
+		setBackground(Color.gray);
 		add(leftPanel, BorderLayout.WEST);
 		add(centerPanel, BorderLayout.CENTER);
 		add(rightPanel, BorderLayout.EAST);
@@ -260,7 +272,8 @@ public class CalendarPanel extends JPanel{
 			Object e = event.getSource();
 		    //adds course
 			if(addClass == e){
-				cal.addClass(list.getSelectedValue());
+			//TODO error check if class is already registered
+			cal.addClass(list.getSelectedValue());
 			//displays added courses on GUI Calendar
 			for (int i = 0; i< y.size(); i++){
 				cal.select(x, y.get(i));
@@ -286,10 +299,14 @@ public class CalendarPanel extends JPanel{
 		// Sets Sections panel visible
 		//-------------------------------------------------------
 		public void valueChanged (ListSelectionEvent event){
+			description.setText(list.getSelectedValue().getDescription());
 			sectionPanel.setVisible(true);
+			secList.clear();
+			for (int i=0; i<list.getSelectedValue().getSectionList().size(); i++)
+				secList.addElement(list.getSelectedValue().getSection(i));
 			}
 		}
-		
+	
 		/******************************************************
 		 * Represents a listener for list of sections
 		 * 

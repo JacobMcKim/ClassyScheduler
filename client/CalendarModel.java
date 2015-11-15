@@ -1,5 +1,14 @@
 package packageCal;
-
+/*****************************************************************************
+* CalendarModel
+*
+* Model for Calendar 
+*
+* Created by Kristopher Trevino
+* Last edited on 11.15.15 ZD
+******************************************************************************
+*
+******************************************************************************/
 import java.util.*;
 import java.awt.*;
 
@@ -26,6 +35,7 @@ public class CalendarModel {
 	public CalendarModel(){
 		this.rows = 15;
 		this.columns = 8;
+		takenSlots = new ArrayList<Point>();
 		registeredCourses = new ArrayList<Course>();
 		coordinates = new Point();
 		calendar = new Cell[rows][columns];
@@ -56,43 +66,18 @@ public class CalendarModel {
 	}
 
 	/***********************************************
-	* Selects MWF cells and sets their availability
+	* Selects cells and sets their availability
 	************************************************/
-	public void selectMWF(int row1, int col1, int row2, int col2, int row3, int col3){  
-		calendar[row1][col1] = Cell.TAKEN;
-		calendar[row2][col2] = Cell.TAKEN;
-		calendar[row3][col3] = Cell.TAKEN;
-		saveMWF(row1, col1, row2, col2, row3, col3);
-	}
-
-	/************************************************************
-	* Selects Tuesday, Thursday cells and sets their availability
-	*************************************************************/
-	public void selectTR(int row1, int col1, int row2, int col2){  
-		calendar[row1][col1] = Cell.TAKEN;
-		calendar[row2][col2] = Cell.TAKEN;
-		saveTR(row1, col1, row2, col2);
+	public void select(int row, int col){ 
+		calendar[row][col] = Cell.TAKEN;
+		saveCoor(row, col);
 	}
 
 	/*************************************
-	* Saves coordinates of MWF slots
+	* Saves coordinates of calendar slots
 	******************************************/
-	public void saveMWF(int row1, int col1, int row2, int col2, int row3, int col3){
-		coordinates.setLocation(row1, col1);
-		takenSlots.add(coordinates.getLocation());
-		coordinates.setLocation(row2, col2);
-		takenSlots.add(coordinates.getLocation());
-		coordinates.setLocation(row3, col3);
-		takenSlots.add(coordinates.getLocation());
-	}
-
-	/*************************************
-	* Saves coordinates of Tuesday, Thursday slots
-	******************************************/
-	public void saveTR(int row1, int col1, int row2, int col2){
-		coordinates.setLocation(row1, col1);
-		takenSlots.add(coordinates.getLocation());
-		coordinates.setLocation(row2, col2);
+	public void saveCoor(int row, int col){
+		coordinates.setLocation(row, col);
 		takenSlots.add(coordinates.getLocation());
 	}
 
@@ -103,14 +88,17 @@ public class CalendarModel {
 		return calendar;
 	}
 	
+	/*************************************
+	* Adds course
+	*************************************/
 	public void addClass(Course c){
 		registeredCourses.add(c);
 	}
 	
+	/*************************************
+	* @return size of registered courses
+	*************************************/
 	public int registeredClassSize(){
 		return registeredCourses.size();
-	}
-	public ArrayList<Course> getRegisteredCourse(){
-		return registeredCourses;
 	}
 }

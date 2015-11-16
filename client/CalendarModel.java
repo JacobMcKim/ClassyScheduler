@@ -24,6 +24,9 @@ public class CalendarModel {
 	
 	/** List of registered courses **/
 	private ArrayList<Course> registeredCourses;
+	
+	/** List of registered courses **/
+	private ArrayList<Section> registeredSections;
 
 	/** Coordinates for calendar slots **/
 	private Point coordinates;
@@ -40,6 +43,7 @@ public class CalendarModel {
 		this.rows = 15;
 		this.columns = 8;
 		takenSlots = new ArrayList<Point>();
+		registeredSections = new ArrayList<Section>();
 		registeredCourses = new ArrayList<Course>();
 		coordinates = new Point();
 		calendar = new Cell[rows][columns];
@@ -59,6 +63,7 @@ public class CalendarModel {
 	public void reset(){
 		registeredCourses.clear();
 		takenSlots.clear();
+		model.clear();
 		//sets all new cells to empty
 		for(int row = 0; row < this.rows; row++)
 			for(int col = 0; col < this.columns; col++){
@@ -95,16 +100,39 @@ public class CalendarModel {
 	/*************************************
 	* Adds course
 	*************************************/
-	public void addClass(Course c){
+	public void addClass(Course c, Section s){
 		registeredCourses.add(c);
+		registeredSections.add(s);
 		model.addElement(c);
 	}
 	
 	/*************************************
 	* @return size of registered courses
 	*************************************/
-	public int registeredClassSize(){
+	public int registeredCoursesSize(){
+		System.out.println(registeredCourses.size());
 		return registeredCourses.size();
+	}
+	
+	/*************************************
+	* @return size of registered sections
+	*************************************/
+	public int registeredSectionsSize(){
+		return registeredSections.size();
+	}
+	
+	/*************************************
+	* 
+	*************************************/
+	public Section getSection(int i){
+		return registeredSections.get(i);
+	}
+	
+	/*************************************
+	* 
+	*************************************/
+	public Course getCourse(int i){
+		return registeredCourses.get(i);
 	}
 	
 	/*************************************

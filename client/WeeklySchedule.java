@@ -60,5 +60,13 @@ public class WeeklySchedule {
     return false;
   }
 
+  // returns true if the schedule meets on that day, where 0 is monday and 4 is friday and false if otu of that
+  // range
+  public boolean day(int d) {
+      if(d<0 || d>4)
+          return false;
+      return days[d];
+  }
+
   public boolean[] getDays() { return days;}
 }

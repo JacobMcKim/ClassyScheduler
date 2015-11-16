@@ -1,7 +1,7 @@
-package packageCal;
+
 import javax.swing.JFrame;
 
-public class control {
+public class Control {
 	//--------------------------------------
 	// Creates the main program frame
 	//--------------------------------------

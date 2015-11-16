@@ -43,6 +43,7 @@ public class Course {
    public String getDescription() { return description;}
    public ArrayList<Section> getSectionList() { return sectionList;}
 
+
    public Section getSection(int i) {
       return sectionList.get(i);
    }
@@ -52,9 +53,6 @@ public class Course {
    public int addSection(Section s) {
 
      if(compare(s.getCourse())) {
-      for(int i = 0; i < sectionList.size(); i++)
-        if(s.checkTimeConflict(sectionList.get(i)))
-          return -1;
       sectionList.add(s);
       return sectionList.size() - 1;
     }

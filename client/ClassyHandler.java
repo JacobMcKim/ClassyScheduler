@@ -20,6 +20,8 @@
 *   - Load resoinse data
 *   - Implement server communication erroe handling.
 ******************************************************************************/
+import org.json.JSONArray;
+import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class ClassyHandler {
@@ -91,45 +93,113 @@ public class ClassyHandler {
     return temp;
   }
 
-  // TODO implement loadDefaultSearchBuff
-  public void loadDefaultSearchBuff() {
-
-    // will load the default searchBuffer from server
-  }
-
-  // TODO Implement loadSearchedCourseBuffer
-  public void loadSearchedCourseBuffer(int desiredDNum, int desiedCID) {
-
-    // will will request desired course from server and load it into seach
-    // buffer
-  }
-
-  public void addSectionToSched(Section s) {
+  // Adds given section to student schedule checking for time conflicts
+  // Returns index of inserted element if successful, -1 if  unsuccessful.
+  public int addSectionToSched(Section s) {
 
     if(!studentSched.contains(s)) {
-      studentSched.add(s);
-    }
-    // TODO error resolution
+        for(int i = 0; i < studentSched.size(); i++) {
+            if(s.checkTimeConflict(studentSched.get(i)))
+                return -1;
+            else if(s.getCourse().compare(studentSched.get(i).getCourse()))
+                return -1;
+        }
+        studentSched.add(s);
+        return studentSched.size()-1;
+    } else
+        return -1;
+
   }
-/*
+
+    // TODO Implement loadSearchedCourseBuffer
+    public void loadSearchBuffer(String s) {
+
+        APICommunicator comm = new APICommunicator();
+        APIRequest req = new APIRequest(ServicesEnum.SEARCH_COURSES);
+
+        JSONObject data;
+        APIResponse resp;
+        req.addRequestProperty("searchPhrase", s);
+        req.addRequestProperty("semID",1);
+
+        if(comm.sendRequest(req)) {
+            resp = comm.getRequestResult();
+            data = resp.getResponseList();
+
+            parseJSONObject(data);
+        }
+    }
+
   public void loadDefaultSearchBuff() {
 
-    APICommunicator comm = new APICommunicator;
-    APIRequest req = new APIRequest(ServciesEnum.SEARCH_COURSES);
+    APICommunicator comm = new APICommunicator();
+    APIRequest req = new APIRequest(ServicesEnum.SEARCH_COURSES);
 
     JSONObject data;
     APIResponse resp;
     req.addRequestProperty("searchPhrase", "*");
+    req.addRequestProperty("semID",1);
 
     if(comm.sendRequest(req)) {
 
-      resp = comm.getRequestResult();
-      data = resp.getResponseList();
+        resp = comm.getRequestResult();
+        data = resp.getResponseList();
 
-      // TODO: load results into searchbuffer
-    }else {
-      // TODO: server communication error handling
+        parseJSONObject(data);
     }
   }
-  */
+
+  private void parseJSONObject(JSONObject obj) {
+      try {
+          String response = obj.getString("Response");
+          if(response.equals("success")) {
+              searchBuffer.clear();
+              JSONArray cList = obj.getJSONArray("courseList");
+
+              // Parse all the received courses
+              for(int i = 0; i < cList.length(); i++) {
+                  JSONObject cTemp = cList.getJSONObject(i);
+
+                  String dep = cTemp.getString("department");
+                  int dID;
+                  if(dep == "CIS")
+                      dID = 1;
+                  else
+                      dID = 2;
+
+                  int cID = Integer.parseInt(cTemp.getString("courseID"));
+                  String title = cTemp.getString("title");
+                  String desc = cTemp.getString("Description");
+                  // TODO: implement credit hours
+
+                  //Create course
+                  Course tCourse = new Course(dID,cID,title,desc);
+                  JSONArray sList = cTemp.getJSONArray("sections");
+
+                  // parse all the the sections of the course
+                  for(int j = 0; j < sList.length(); j++) {
+                      JSONObject sTemp = sList.getJSONObject(j);
+
+                      int sID = Integer.parseInt(sTemp.getString("sectionID"));
+                      // TODO: implement professor
+                      // TODO: convert string times to int
+                      int stime = 1200;
+                      int etime = 1300;
+                      String meet = sTemp.getString("meetDays");
+                      // TODO: implement building + room
+                      // TODO: implement seats and seats open
+
+                      //Create Section and add it to course's section list
+                      Section tSection = new Section(tCourse,sID,stime,etime,meet);
+                      tCourse.addSection(tSection);
+                  }
+
+                  searchBuffer.add(tCourse);
+              }
+          }
+      } catch(Exception e) {
+          System.out.println(e.getMessage());
+      }
+  }
+
 }

@@ -1,14 +1,13 @@
-package packageCal;
 /*****************************************************************************
-* CalendarModel
-*
-* Model for Calendar 
-*
-* Created by Kristopher Trevino
-* Last edited on 11.15.15 ZD
-******************************************************************************
-*
-******************************************************************************/
+ * CalendarModel
+ *
+ * Model for Calendar
+ *
+ * Created by Kristopher Trevino
+ * Last edited on 11.15.15 ZD
+ ******************************************************************************
+ *
+ ******************************************************************************/
 import java.util.*;
 import java.awt.*;
 
@@ -21,10 +20,10 @@ public class CalendarModel {
 
 	private int rows;
 	private int columns;
-	
+
 	/** List of registered courses **/
 	private ArrayList<Course> registeredCourses;
-	
+
 	/** List of registered courses **/
 	private ArrayList<Section> registeredSections;
 
@@ -35,10 +34,10 @@ public class CalendarModel {
 	private ArrayList<Point> takenSlots;
 
 	DefaultListModel<Course> model = new DefaultListModel<Course>();
-	
+
 	/****************************************
-	* Constructor for setting up new calendar
-	****************************************/
+	 * Constructor for setting up new calendar
+	 ****************************************/
 	public CalendarModel(){
 		this.rows = 15;
 		this.columns = 8;
@@ -51,15 +50,15 @@ public class CalendarModel {
 		for(int row = 0; row < this.rows; row++)
 			for(int col = 0; col < this.columns; col++){
 				calendar[row][col] = Cell.EMPTY;
-			//sets time and date cells to taken
+				//sets time and date cells to taken
 				if (row == 0 || col == 0)
 					calendar[row][col] = Cell.TAKEN;
-		}
+			}
 	}
 
 	/**************************************
-	* Resets calendar
-	**************************************/
+	 * Resets calendar
+	 **************************************/
 	public void reset(){
 		registeredCourses.clear();
 		takenSlots.clear();
@@ -68,79 +67,79 @@ public class CalendarModel {
 		for(int row = 0; row < this.rows; row++)
 			for(int col = 0; col < this.columns; col++){
 				calendar[row][col] = Cell.EMPTY;
-			//sets time and date cells to taken
-			if (row == 0 || col == 0)
-				calendar[row][col] = Cell.TAKEN;
+				//sets time and date cells to taken
+				if (row == 0 || col == 0)
+					calendar[row][col] = Cell.TAKEN;
 			}
 	}
 
 	/***********************************************
-	* Selects cells and sets their availability
-	************************************************/
-	public void select(int row, int col){ 
+	 * Selects cells and sets their availability
+	 ************************************************/
+	public void select(int row, int col){
 		calendar[row][col] = Cell.TAKEN;
 		saveCoor(row, col);
 	}
 
 	/*************************************
-	* Saves coordinates of calendar slots
-	******************************************/
+	 * Saves coordinates of calendar slots
+	 ******************************************/
 	public void saveCoor(int row, int col){
 		coordinates.setLocation(row, col);
 		takenSlots.add(coordinates.getLocation());
 	}
 
 	/*************************************
-	* Displays current calendar
-	*************************************/
+	 * Displays current calendar
+	 *************************************/
 	public Cell[][] getCalendar(){
 		return calendar;
 	}
-	
+
 	/*************************************
-	* Adds course
-	*************************************/
+	 * Adds course
+	 *************************************/
 	public void addClass(Course c, Section s){
 		registeredCourses.add(c);
 		registeredSections.add(s);
 		model.addElement(c);
 	}
-	
+
 	/*************************************
-	* @return size of registered courses
-	*************************************/
+	 * @return size of registered courses
+	 *************************************/
 	public int registeredCoursesSize(){
 		System.out.println(registeredCourses.size());
 		return registeredCourses.size();
 	}
-	
+
 	/*************************************
-	* @return size of registered sections
-	*************************************/
+	 * @return size of registered sections
+	 *************************************/
 	public int registeredSectionsSize(){
 		return registeredSections.size();
 	}
-	
+
 	/*************************************
-	* 
-	*************************************/
+	 *
+	 *************************************/
 	public Section getSection(int i){
 		return registeredSections.get(i);
 	}
-	
+
 	/*************************************
-	* 
-	*************************************/
+	 *
+	 *************************************/
 	public Course getCourse(int i){
 		return registeredCourses.get(i);
 	}
-	
+
 	/*************************************
-	 * 
+	 *
 	 * @return list of registered courses
 	 ************************************/
 	public  DefaultListModel<Course> getModelList(){
 		return model;
 	}
-	 
+
 }

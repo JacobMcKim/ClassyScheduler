@@ -150,5 +150,11 @@ public class Tester {
     else
       System.out.println("failed");
 
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
+    System.out.println("loadDefaultSearchBuffer Test");
+    System.out.println("~~~~~~~~~~~~~~~~~~~~~~~~");
+    classy.loadDefaultSearchBuff();
+    System.out.println("search buff size: " + classy.getSearchBuffer().size());
+
   }
 }

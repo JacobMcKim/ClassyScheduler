@@ -114,6 +114,9 @@ class RequestManager Implements IController {
           case "UpdateSchedule":
             $iCommand = new UpdateScheduleCommand ($requestData);
             break;
+          case "GetSchedule" :
+            $iCommand = new GetScheduleCommmand ($requestData);
+            break;
           default: // Service requested not found.
             $commandFound = false;
         }

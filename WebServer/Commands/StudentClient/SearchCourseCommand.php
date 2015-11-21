@@ -163,7 +163,7 @@ class SearchCourseCommand extends Command {
                                    JOIN building AS b
                                        ON b.buildingID = l.buildingID
                                    JOIN timeblock AS t
-                                       ON t.timeblockID = s.timeblockID
+                                       ON t.timeblockID = s.sectionID
                             WHERE c.courseCode = ?";
 
                 $courseResults = array();

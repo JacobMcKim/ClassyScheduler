@@ -96,14 +96,13 @@ class GetScheduleCommmand extends Command {
           try {
 
             // 1. Get schedule meta data if it exists so we can pull details.
-            $sqlQuery = 'SELECT scheduleID, creditHours WHERE
+            $sqlQuery = 'SELECT scheduleID, creditHours FROM studentschedule WHERE
               studentID = ? AND semesterID = ? LIMIT 1';
             $sqlParams = array($this->requestContent["studentID"],$this->requestContent["semesterID"]);
 
             // 2. If data could be found pull class data.
             if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
               $result = $this->dbAccess->getResults();
-              var_dump($result);
               if ($result != null) {
                   $sqlQuery = "SELECT s.semesterCode,s.sectionCode,s.seats,s.seatsOpen,s.sectionID,
                                 d.depName, f.firstName, f.lastName, b.buildingName, l.classroom, t.meetDays,
@@ -124,7 +123,13 @@ class GetScheduleCommmand extends Command {
                                     JOIN timeblock AS t
                                     	ON t.timeblockID = s.timeblockID
                                 WHERE si.scheduleID = ?";
-                  //$sqlParams = array($result[""]);
+                  $scheduleID = $result["scheduleID"];
+                  $sqlParams = array($scheduleID);
+
+                  if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
+                    $result = $this->dbAccess->getResults();
+                    var_dump($result);
+                  }
                 }
             }
             else {

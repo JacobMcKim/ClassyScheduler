@@ -77,7 +77,7 @@ class GetFacRatingCommand extends Command {
         // --- Variable Declarations  -------------------------------//
 
         /* @var $commands (Array) Used to cross check the request.   */
-        $commandParams = array ("faculityID", "courseID");
+        $commandParams = array ("facultyID", "courseID");
 
         /* @var $commandResult (commandResult) The result model.     */
         $commandResult;
@@ -114,7 +114,7 @@ class GetFacRatingCommand extends Command {
             if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
               $result = $this->dbAccess->getResults();
               if ($result != null) {
-                for ($result as &$rating) {
+                foreach ($result as &$rating) {
                   $ratingItem["rating"] = $rating["rating"];
                   $ratingItem["description"] = $rating["description"];
                   $ratingItem["revClassStanding"] = $rating["classStanding"];
@@ -128,7 +128,7 @@ class GetFacRatingCommand extends Command {
                 $commandResult->addValuePair ("ratings",$ratingList);
               }
               else {
-                $commandResult = new commandResult ("failure");
+                $commandResult = new commandResult ("failed");
                 $commandResult->addValuePair ("Description","No ratings found.");
               }
             }
@@ -136,8 +136,7 @@ class GetFacRatingCommand extends Command {
               $commandResult = new commandResult ("systemError");
               $commandResult->addValuePair ("Description","Database failure.");
             }
-
-
+          }
           catch (Exception $e) {
             $commandResult = new commandResult ("systemError");
             $commandResult->addValuePair ("Description","Database failure.");

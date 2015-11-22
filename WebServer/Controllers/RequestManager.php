@@ -77,7 +77,7 @@ class RequestManager Implements IController {
           case "GetSchedule" :
             $iCommand = new GetScheduleCommmand ($requestData);
             break;
-          case "GetSemester" :
+          case "GetSemesters" :
             $iCommand = new GetSemestersCommand ($requestData);
             break;
           case "GetFacRatings":

@@ -104,15 +104,16 @@ class GetSemestersCommand extends Command {
 
           // TODO: 3. Brief Description of what is going to happen.
           try {
-            $sqlQuery = 'SELECT * FROM semester';
+            $sqlQuery = 'SELECT * FROM semester WHERE ?=?';
+            $sqlParams = array (1,1);
             if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
               $result = $this->dbAccess->getResults();
               if ($result != null) {
-                for ($result as &$semester) {
+                foreach ($result as &$semester) {
                   $semesterItem ["semesterID"] = $semester["semesterID"];
                   $semesterItem ["year"] = $semester["year"];
                   $semesterItem ["season"] = $semester["season"];
-                  array_push($semesterList,$semsterItem);
+                  array_push($semesterList,$semesterItem);
                 }
 
                 // Return the result.

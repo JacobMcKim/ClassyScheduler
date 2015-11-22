@@ -103,6 +103,7 @@ class GetScheduleCommmand extends Command {
             // 2. If data could be found pull class data.
             if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
               $result = $this->dbAccess->getResults();
+
               if ($result != null) {
                   $sqlQuery = "SELECT s.semesterCode,s.sectionCode,s.seats,s.seatsOpen,s.sectionID,
                                 d.depName, f.firstName, f.lastName, b.buildingName, l.classroom, t.meetDays,
@@ -123,7 +124,7 @@ class GetScheduleCommmand extends Command {
                                     JOIN timeblock AS t
                                     	ON t.timeblockID = s.timeblockID
                                 WHERE si.scheduleID = ?";
-                  $scheduleID = $result["scheduleID"];
+                  $scheduleID = $result[0]["scheduleID"];
                   $sqlParams = array($scheduleID);
 
                   if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {

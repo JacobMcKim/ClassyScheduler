@@ -87,6 +87,18 @@ class GetScheduleCommmand extends Command {
         /* @var $sqlQuery (object) The query to execute on service.  */
         $sqlQuery = NULL;
 
+        /* @var $classList (array) List of classes for user.         */
+        $classList = array();
+
+        /* @var $scheduleResult (array) Meta data for schedule.      */
+        $scheduleResult = array();
+
+        /* @var $scheduleResult (string) The schedule ID.            */
+        $scheduleID;
+
+        /* @var $credits (int) The number of credits scheduled.      */
+        $credits;
+
         // --- Main Routine ------------------------------------------//
 
         // Check if the request contains all necessary parameters.
@@ -107,7 +119,7 @@ class GetScheduleCommmand extends Command {
               if ($result != null) {
                   $sqlQuery = "SELECT s.semesterCode,s.sectionCode,s.seats,s.seatsOpen,s.sectionID,
                                 d.depName, f.firstName, f.lastName, b.buildingName, l.classroom, t.meetDays,
-                                t.creditHours, t.startTime, t.endTime, c.title, c.courseCode, c.description
+                                t.creditHours, t.startTime, t.endTime, c.title, c.cID, c.courseCode, c.description
                                 FROM scheduleitem AS si
                                 	JOIN section AS s
                                     	ON s.sectionCode = si.SectionCode
@@ -124,21 +136,67 @@ class GetScheduleCommmand extends Command {
                                     JOIN timeblock AS t
                                     	ON t.timeblockID = s.timeblockID
                                 WHERE si.scheduleID = ?";
+
+                  // fill out meta data used for later.
                   $scheduleID = $result[0]["scheduleID"];
+                  $credits = $result[0]["creditHours"];
                   $sqlParams = array($scheduleID);
 
+                  // 3. get the classes and populate the data.
                   if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
                     $result = $this->dbAccess->getResults();
-                    var_dump($result);
+                    if ($result != null) {
+                      foreach($result as &$resClass) {
+                         $class = array ();
+                         $class["courseCode"] = $resSec["courseCode"];
+                         $class["courseID"] = $resSec["cID"];
+                         $class["courseTitle"] = $resSec["title"];
+                         $class["courseDescription"] = $resSec["courseCode"];
+                         $class["semesterCode"] = $resSec["semesterCode"];
+                         $class["sectionID"] = $resSec["sectionID"];
+                         $class["sectionCode"] = $resSec["sectionCode"];
+                         $class["profFirst"] = $resSec["firstName"];
+                         $class["profLast"] = $resSec["lastName"];
+                         $class["startTime"] = $resSec["startTime"];
+                         $class["endTime"] = $resSec["endTime"];
+                         $class["meetDays"] = $resSec["meetDays"];
+                         $class["building"] = $resSec["buildingName"];
+                         $class["room"] = $resSec["classroom"];
+                         $class["seats"] = $resSec["seats"];
+                         $class["seatsOpen"] = $resSec["seatsOpen"];
+                         array_push($classList,$class);
+                      }
+
+                      // Add all meta data to the list.
+                      $scheduleResult ["scheduleID"] = $scheduleID;
+                      $scheduleResult ["creditHours"] = $credits;
+                      $scheduleResult ["classes"] = $classList;
+
+                      // Return the result.
+                      $commandResult = new commandResult ("success");
+                      $commandResult->addValuePair ("scheduleData",$scheduleResult);
+                      
+                    }
+                    else {
+                      $commandResult = new commandResult ("systemError");
+                      $commandResult->addValuePair ("Description","Database failure.");
+                    }
                   }
+                  else {
+                    $commandResult = new commandResult ("systemError");
+                    $commandResult->addValuePair ("Description","Database failure.");
+                  }
+                }
+                else {
+                  $commandResult = new commandResult ("systemError");
+                  $commandResult->addValuePair ("Description","Database failure.");
                 }
             }
             else {
-
+              $commandResult = new commandResult ("systemError");
+              $commandResult->addValuePair ("Description","Database failure.");
             }
-
           }
-
           catch (Exception $e) {
             $commandResult = new commandResult ("systemError");
             $commandResult->addValuePair ("Description","Database failure.");

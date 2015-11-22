@@ -30,66 +30,67 @@
  */
 
 
- +class UpdateScheduleCommand extends Command {
+ class UpdateScheduleCommand extends Command {
 
- -    //---------------------------------------------------------------//
- -    // Class Atributes                                               //
- -    //---------------------------------------------------------------//
- -
- -    /* The database access object linking to DB.                     */
- -    private $dbAccess;
- -
- -    /* The content of the user request.                              */
- -    private $requestContent = array();
- -
- -    //---------------------------------------------------------------//
- -    // Constructor/Destructors                                       //
- -    //---------------------------------------------------------------//
- -    /******************************************************************
- -     * @Description - Called to build the command, It takes in the
- -     * command parameters and saves them locally to the class.
- -     *
- -     * @param $requestData - The json request data required to make the
- -     * request.
- -     *
- -     * @return None
- -     *
- -     *****************************************************************/
- -    function __construct($requestData) {
- -
- -      // Set the content locally.
- -      $this->requestContent = $requestData;
- -
- -      // Create the new required database objects to preform task.
- -      $this->dbAccess = new MySqlDatabaseTool("studentClient");
- -
- -    }
- -
- -    /******************************************************************
- -     * @Description - Called when the command has finished executing
- -     * and its time to tear down all the command's resources.
- -     *
- -     * @param None
- -     *
- -     * @return None
- -     *
- -     *****************************************************************/
- -    function __destruct() {
- -        $this->dbAccess = NULL;
- -        $this->requestContent = NULL;
- -
- -    }
- -
- -    //---------------------------------------------------------------//
- -    // Class Methods                                                 //
- -    //---------------------------------------------------------------//
- -
-  -    /* Executes the command defined for the service implementation. */
-  -    public function executeCommand() {
-  -
-  -      // --- Variable Declarations  -------------------------------//
-  -
-  -     /* @var $commands (Array) Used to cross check the request.   */
+   //---------------------------------------------------------------//
+   // Class Atributes                                               //
+   //---------------------------------------------------------------//
+
+    /* The database access object linking to DB.                     */
+    private $dbAccess;
+
+    /* The content of the user request.                              */
+    private $requestContent = array();
+
+    //---------------------------------------------------------------//
+    // Constructor/Destructors                                       //
+    //---------------------------------------------------------------//
+
+    /******************************************************************
+     * @Description - Called to build the command, It takes in the
+     * command parameters and saves them locally to the class.
+     *
+     * @param $requestData - The json request data required to make the
+     * request.
+     *
+     * @return None
+     *
+     *****************************************************************/
+     function __construct($requestData) {
+
+       // Set the content locally.
+       $this->requestContent = $requestData;
+
+       // Create the new required database objects to preform task.
+       $this->dbAccess = new MySqlDatabaseTool("studentClient");
+
+     }
+
+     /******************************************************************
+      * @Description - Called when the command has finished executing
+      * and its time to tear down all the command's resources.
+      *
+      * @param None
+      *
+      * @return None
+      *
+      *****************************************************************/
+     function __destruct() {
+         $this->dbAccess = NULL;
+         $this->requestContent = NULL;
+
+     }
+
+     //---------------------------------------------------------------//
+     // Class Methods                                                 //
+     //---------------------------------------------------------------//
+
+      /* Executes the command defined for the service implementation. */
+      public function executeCommand() {
+
+        // --- Variable Declarations  -------------------------------//
+
+        /* @var $commands (Array) Used to cross check the request.   */
         $commandParams = array ("scheduleID","sectionCodeID", "operation");
 
         /* @var $commandResult (commandResult) The result model.     */

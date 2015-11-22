@@ -28,6 +28,10 @@ require_once 'DatabaseTools/MySqlDatabaseTool.php';
 require_once "Commands/ICommand.php";
 require_once "Commands/Command.php";
 
+// ## Account Management
+require_once "Commands/AccountManagement/LoginCommand.php";
+require_once "Commands/AccountManagement/LogoutCommand.php";
+
 // ## Admin Panel commands
 require_once "Commands/AdminClient/AddCourseCommand.php";
 require_once "Commands/AdminClient/DeleteCourseCommand.php";
@@ -37,6 +41,8 @@ require_once "Commands/AdminClient/UpdateClassCommand.php";
 require_once "Commands/StudentClient/SearchCourseCommand.php";
 require_once "Commands/StudentClient/UpdateScheduleCommand.php";
 require_once "Commands/StudentClient/GetScheduleCommmand.php";
+require_once "Commands/StudentClient/GetSemestersCommand.php";
+require_once "Commands/StudentClient/GetFacRatingCommand.php";
 
 // Controllers
 require_once "Controllers/IController.php";

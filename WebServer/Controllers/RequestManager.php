@@ -43,71 +43,31 @@ class RequestManager Implements IController {
                                       && $requestData ["ServiceID"] != NULL) {
 
         // Parse for the right command to be displayed.
-        switch ( $requestData ["ServiceID"] ) { /*
-          case "AddMajor" : // Creates a course.
-            $iCommand = new AddMajorCommand ($requestData);
-            break;
-          case "DeleteMajor" : // Signs user in and creates a session.
-            $iCommand = new DeleteMajorCommand ($requestData);
-            break;
-          case "UpdateMajor" : // Signs user out and destroys session.
-            $iCommand = new UpdateMajorCommand ($requestData);
-            break;
-          case "UpdateMajors" : // Signs user out and destroys session.
-            $iCommand = new UpdateMajorsCommand ($requestData);
-            break;
-          case "GetMajor" : // Updates a users credentials.
-            $iCommand = new GetMajorCommand ($requestData);
-            break;
-          case "GetMajors" : // Gets Data about the user.
-            $iCommand = new GetMajorsCommand ($requestData);
-            break; */
-          case "AddCourse" : // Configures a password change.
-            $iCommand = new AddCourseCommand ($requestData);
-            break;
-          case "DeleteCourse" : // Changes a users password.
-            $iCommand = new DeleteCourseCommand ($requestData);
-            break;
-          /*case "DeleteCourses" : // Changes a users password.
-            $iCommand = new DeleteCoursesCommand ($requestData);
-            break;*/
-          case "UpdateCourse" : // Change the profile picture.
-            $iCommand = new UpdateCourseCommand ($requestData);
-            break;
-          /*
-          case "GetCourse" : // Gets the profile picture.
-            $iCommand = new GetCourseCommand ($requestData);
-            break;
-          case "GetCourses":
-            $iCommand = new GetCoursesCommand ($requestData);
-            break;
-          case "AddSelection" :
-            $iCommand = new AddSectionCommand ($requestData);
-            break;
-          case "DeleteSection" :
-            $iCommand = new DeleteSectionCommand ($requestData);
-            break;
-          case "DeleteSections" :
-            $iCommand = new DeleteSectionsCommand ($requestData);
-            break;
-          case "UpdateSection" :
-            $iCommand = new UpdateSectionCommand ($requestData);
-            break;
-          case "GetSection" :
-            $iCommand = new GetSectionCommand ($requestData);
-            break;
-          case "GetSections" :
-            $iCommand = new GetSectionsCommand ($requestData);
-            break;
+        switch ( $requestData ["ServiceID"] ) {
+
+          // --- Account Management commands --- //
+
           case "Login" :
             $iCommand = new LoginCommand ($requestData);
             break;
           case "Logout" :
             $iCommand = new LogoutCommand ($requestData);
             break;
-          case "ForgotPasswords" :
-            $iCommand = new ForgotPasswordsCommand ($requestData);
-            break; */
+
+          // --- Admin panel commands --- //
+
+          case "AddCourse" :
+            $iCommand = new AddCourseCommand ($requestData);
+            break;
+          case "DeleteCourse" :
+            $iCommand = new DeleteCourseCommand ($requestData);
+            break;
+          case "UpdateCourse" :
+            $iCommand = new UpdateCourseCommand ($requestData);
+            break;
+
+          // --- Student panel commands --- //
+
           case "SearchCourse" :
             $iCommand = new SearchCourseCommand ($requestData);
             break;
@@ -117,6 +77,13 @@ class RequestManager Implements IController {
           case "GetSchedule" :
             $iCommand = new GetScheduleCommmand ($requestData);
             break;
+          case "GetSemester" :
+            $iCommand = new GetSemestersCommand ($requestData);
+            break;
+          case "GetFacRatings":
+            $iCommand = new GetFacRatingCommand ($requestData);
+            break;
+
           default: // Service requested not found.
             $commandFound = false;
         }

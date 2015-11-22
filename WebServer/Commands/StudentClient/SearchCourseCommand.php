@@ -249,8 +249,8 @@ class SearchCourseCommand extends Command {
         $commandResult->addValuePair ("Description","Invalid input parameters for SearchCourses service.");
         }
 
- // Return the command result.
- return $commandResult;
+       // Return the command result.
+       return $commandResult;
 
     }
 

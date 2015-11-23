@@ -14,6 +14,7 @@ public enum APIResultEnum
     FAILURE,
     INVALID_DATA,
     SYSTEM_ERROR,
+    SESSION_INVALID,
     UNKNOWN
     
 }

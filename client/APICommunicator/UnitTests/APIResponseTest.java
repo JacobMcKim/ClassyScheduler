@@ -1,5 +1,5 @@
 /* --------------------------------------------------------------------*
- * APIResponseTest.java                                                 *
+ * APIResponseTest.java                                                *
  * --------------------------------------------------------------------*
  *  Description - This class is used to test the response object type. *
  * --------------------------------------------------------------------*
@@ -107,8 +107,18 @@ public class APIResponseTest
         response = null;
         
     }
+
+    // 5. 
+    @Test
+    public void testSessionInvalidResponseConstruct () {
+        response = new APIResponse(200,"{\"Response\":\"sessionInvalid\"}");
+        assertEquals(response.getResponseType(), APIResultEnum.SESSION_INVALID);
+        assertNotNull(response.getResponseList());
+        response = null;
+        
+    }
     
-    // 5.
+    // 6.
     @Test
     public void testUnknownResponseConstruct () {
         response = new APIResponse(200,"{\"Response\":\"\"}");
@@ -118,7 +128,7 @@ public class APIResponseTest
         
     }
     
-    // 6.
+    // 7.
     @Test
     public void testBadCodeErrorResponseConstruct () {
         response = new APIResponse(400,"{\"Response\":\"systemError\"}");
@@ -133,7 +143,7 @@ public class APIResponseTest
         
     }
     
-    // 7. 
+    // 8. 
     @Test
     public void testBadCodeUnknownResponseConstruct () {
         
@@ -160,7 +170,7 @@ public class APIResponseTest
     //  Property Creation Test Definitions                            //
     //----------------------------------------------------------------//
     
-    // 8.
+    // 9.
     @Test
     public void testgetResponseListGood() {
         response = new APIResponse(200,"{\"Response\":\"failed\",\"Description\":\"class already exists.\"}");
@@ -171,7 +181,7 @@ public class APIResponseTest
     }
     
     
-    // 9.
+    // 10.
     @Test
     public void testgetResponseListBad () {
         response = new APIResponse(200,null);

@@ -22,9 +22,9 @@
    * Sample Request JSON                                                 *
    * --------------------------------------------------------------------*
    {
-     "ServiceID": "UpdateSchedule",
+     "ServiceID": "SearchCourse",
      "searchPhrase": "CIS 350",
-     "semID" : 1
+     "semesterID" : 1
    }
   */
 
@@ -88,7 +88,7 @@ class SearchCourseCommand extends Command {
         // --- Variable Declarations  -------------------------------//
 
         /* @var $commands (Array) Used to cross check the request.   */
-        $commandParams = array ("searchPhrase","semID");
+        $commandParams = array ("searchPhrase","semesterID");
 
         /* @var $commandResult (commandResult) The result model.     */
         $commandResult;
@@ -172,7 +172,7 @@ class SearchCourseCommand extends Command {
                 foreach ($courseList as &$courseCode) {
 
                   // Execute the search query.
-                  $sqlParams = array ($this->requestContent["semID"],$courseCode["courseCode"]);
+                  $sqlParams = array ($this->requestContent["semesterID"],$courseCode["courseCode"]);
                   if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
 
                     // 5. Check and see if we have sections.

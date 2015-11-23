@@ -95,14 +95,20 @@ class CheckSessionCommand extends Command {
           // TODO: 3. Brief Description of what is going to happen.
           try {
             $sqlQuery = 'SELECT * FROM session WHERE studentID = ? AND sessionKey = ?
-                            AND NOW () BETWEEN createTime AND expireTime';
+                            AND NOW() BETWEEN createTime AND expireTime';
             $sqlParams = array ($this->requestContent["studentID"],$this->requestContent["sessionID"]);
 
             // Execute and build the login data result.
             if ($this->dbAccess->executeQuery ($sqlQuery,$sqlParams)) {
               $result = $this->dbAccess->getResults();
-              var_dump($result);
-              $commandResult = new commandResult ("success");
+              if (gettype($result) == "array" && count($result) == 1) {
+                $commandResult = new commandResult ("success");
+              }
+
+              else {
+                $commandResult = new commandResult ("sessionInvalid");
+                $commandResult->addValuePair ("Description","Session data invalid, session may have ended.");
+              }
             }
 
             else {

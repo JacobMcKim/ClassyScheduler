@@ -135,6 +135,11 @@ class CommandResult implements ICommandResult {
           $this->resultName = $resultType;
           break;
 
+        case 'sessionInvalid':
+          $this->resultCode = -4;
+          $this->resultName = $resultType;
+          break;
+
         default:
           $this->resultCode = 0;
           $this->resultName = "";

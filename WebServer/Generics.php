@@ -14,8 +14,6 @@
 //  Includes                                                         //
 //===================================================================//
 
-require_once 'kint/Kint.class.php';
-
 // Data Models
 require_once 'Models/ICommandResult.php';
 require_once 'Models/CommandResult.php';

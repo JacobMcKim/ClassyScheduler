@@ -152,7 +152,7 @@ class MySqlDatabaseTool Implements IDatabaseTool {
       return $this->resultArray;
     }
     else {
-      return NULL;
+      return $this->resultCount;
     }
 
   }
@@ -170,7 +170,9 @@ class MySqlDatabaseTool Implements IDatabaseTool {
       if ($RequestString != null && mb_substr_count($RequestString,"?") == count ($RequestAtributes) ) {
 
         $this->queryStmt = $this->dbConnect->prepare($RequestString);
-        $this->resultCount = $this->queryStmt->execute($RequestAtributes);
+        $this->queryStmt->execute($RequestAtributes);
+        $this->resultCount = $this->queryStmt->rowCount();
+
         if ($this->resultCount > 0) {
           $this->resultArray = $this->queryStmt->fetchAll(PDO::FETCH_ASSOC);
         }

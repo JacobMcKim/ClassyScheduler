@@ -100,8 +100,14 @@ class LogoutCommand extends Command {
             // Execute and build the login data result.
             if ($this->dbAccess->executeQuery ($sqlQuery,$sqlParams)) {
               $result = $this->dbAccess->getResults();
-              var_dump($result);
-              $commandResult = new commandResult ("success");
+
+              if ($result > 0) {
+                $commandResult = new commandResult ("success");
+              }
+              else {
+                $commandResult = new commandResult ("failed");
+                $commandResult->addValuePair ("Description","Session already logged out or doesn't exist.");
+              }
             }
 
             else {
@@ -118,7 +124,7 @@ class LogoutCommand extends Command {
 
         else {
         $commandResult = new commandResult ("invalidData");
-        $commandResult->addValuePair ("Description","Invalid input parameters for AddCourse.");
+        $commandResult->addValuePair ("Description","Invalid input parameters for Logout.");
         }
 
         // Return the command result.

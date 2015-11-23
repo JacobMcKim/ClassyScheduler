@@ -90,6 +90,9 @@ class LoginCommand extends Command {
         /* @var $uniqueID (string) The session key to use for login. */
         $uniqueID = uniqid("classyStudent_");
 
+        /* @var $accountDataRes (array) The user data to return.     */
+        $accountDataRes;
+
         // --- Main Routine ------------------------------------------//
 
         // Check if the request contains all necessary parameters.
@@ -98,7 +101,7 @@ class LoginCommand extends Command {
           // Attempt to check the password and user name.
           try {
             $sqlQuery = 'SELECT s.studentID, s.password, s.salt, i.firstname, i.lastname,
-						    i.classStanding i.creditHours FROM student AS s
+						    i.classStanding, i.creditHours FROM student AS s
 			            	JOIN studentinfo AS i
 			            		ON s.studentID = i.studentID
 			            	WHERE email = ?';
@@ -106,29 +109,38 @@ class LoginCommand extends Command {
 
             // Execute the search for the account.
             if ($this->dbAccess->executeQuery ($sqlQuery,$sqlParams)) {
-              $result = $this->dbAccess->getResults();
+              $accountDataRes = $this->dbAccess->getResults();
 
               // check the password to see if it matches.
-              if ($result != null) {
-                $checkPassword = $crypt(this->requestContent["password"]),
-                                  '$2a$07' . $result[0]["salt"]);
+              if ($accountDataRes != null) {
+                $checkPassword = crypt($this->requestContent["password"],
+                                  '$2a$07' . $accountDataRes[0]["salt"]);
 
                 // If it matches build insert query to create session.
-                if ($checkPassword == $result[0]["password"]) {
-                  $sqlQuery = 'INSERT INTO session
-                      		(studentID, sessionKey, createTime, expireTime)
-                      		VALUES ?, ?, NOW(), NOW() + 30 MINUTE';
-              		$sqlParams = array ($result[0]["studentID"],$uniqueID);
+                if (strcmp($checkPassword,$accountDataRes[0]["password"]) == 0) {
+                  $sqlQuery = 'INSERT INTO session (studentID, sessionKey, createTime, expireTime)
+                                VALUES (?, ?, NOW(),ADDTIME(NOW(), "00:30:00"))';
+              		$sqlParams = array ($accountDataRes[0]["studentID"],$uniqueID);
 
               		// Execute and build the login data result.
               		if ($this->dbAccess->executeQuery ($sqlQuery,$sqlParams)) {
-                      $commandResult = new commandResult ("success");
-                      $commandResult->addValuePair ("studentID",$result[0]["studentID"]);
-                      $commandResult->addValuePair ("sessionID",$uniqueID);
-                      $commandResult->addValuePair ("firstName",$result[0]["firstname"]);
-                      $commandResult->addValuePair ("lastName",$result[0]["lastname"]);
-                      $commandResult->addValuePair ("classStanding",$result[0]["classStanding"]);
-                      $commandResult->addValuePair ("creditHours",$result[0]["creditHours"]);
+                      $result = $this->dbAccess->getResults();
+
+                      // Check and see if were already logged in.
+                      if ($result) {
+                        $commandResult = new commandResult ("success");
+                        $commandResult->addValuePair ("studentID",$accountDataRes[0]["studentID"]);
+                        $commandResult->addValuePair ("sessionID",$uniqueID);
+                        $commandResult->addValuePair ("firstName",$accountDataRes[0]["firstname"]);
+                        $commandResult->addValuePair ("lastName",$accountDataRes[0]["lastname"]);
+                        $commandResult->addValuePair ("classStanding",$accountDataRes[0]["classStanding"]);
+                        $commandResult->addValuePair ("creditHours",$accountDataRes[0]["creditHours"]);
+                      }
+
+                      else { // Account already logged in.
+                        $commandResult = new commandResult ("failed");
+                        $commandResult->addValuePair ("Description","The account is already signed in somewhere.");
+                      }
               		}
 
               		else { // Issue with insert query.
@@ -163,7 +175,7 @@ class LoginCommand extends Command {
 
         else {
         $commandResult = new commandResult ("invalidData");
-        $commandResult->addValuePair ("Description","Invalid input parameters for AddCourse.");
+        $commandResult->addValuePair ("Description","Invalid input parameters for Login.");
         }
 
         // Return the command result.

@@ -48,7 +48,7 @@ class GetSemestersCommand extends Command {
       $this->requestContent = $requestData;
 
       // Create the new required database objects to preform task.
-      $this->dbAccess = new MySqlDatabaseTool("adminClient");
+      $this->dbAccess = new MySqlDatabaseTool("studentClient");
 
     }
 

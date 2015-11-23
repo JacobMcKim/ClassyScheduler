@@ -47,7 +47,7 @@ class GetScheduleCommmand extends Command {
       $this->requestContent = $requestData;
 
       // Create the new required database objects to preform task.
-      $this->dbAccess = new MySqlDatabaseTool("adminClient");
+      $this->dbAccess = new MySqlDatabaseTool("studentClient");
 
     }
 
@@ -175,7 +175,7 @@ class GetScheduleCommmand extends Command {
                       // Return the result.
                       $commandResult = new commandResult ("success");
                       $commandResult->addValuePair ("scheduleData",$scheduleResult);
-                      
+
                     }
                     else {
                       $commandResult = new commandResult ("systemError");

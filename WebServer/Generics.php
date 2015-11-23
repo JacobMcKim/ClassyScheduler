@@ -31,6 +31,7 @@ require_once "Commands/Command.php";
 // ## Account Management
 require_once "Commands/AccountManagement/LoginCommand.php";
 require_once "Commands/AccountManagement/LogoutCommand.php";
+require_once "Commands/AccountManagement/CheckSessionCommand.php";
 
 // ## Admin Panel commands
 require_once "Commands/AdminClient/AddCourseCommand.php";

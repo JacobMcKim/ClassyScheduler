@@ -36,11 +36,28 @@ class RequestManager Implements IController {
       /* @var $serviceResult Array Contains the command results. */
       $serviceResult = NULL;
 
+      /* @var $iCommand The command object to execute.          */
+      $iCommand = NULL;
+
+      /* @var $sessionCheckCommand The command to check session*/
+      $sessionCheckCommand;
+
       // --- Main Routine -----------------------------------------//
 
       // Make sure the serviceID element exists if so execute.
       if ($requestData != NULL && array_key_exists("ServiceID",$requestData)
                                       && $requestData ["ServiceID"] != NULL) {
+
+        // check session if needed.
+        if ($requestData ["ServiceID"] != "Login") {
+          $sessionCheckCommand = new CheckSessionCommand ($requestData);
+          $serviceResult = $sessionCheckCommand -> executeCommand();
+
+          // Invalid session data flag it.
+          if ($serviceResult->getResultType() != "success") {
+            return $serviceResult;
+          }
+        }
 
         // Parse for the right command to be displayed.
         switch ( $requestData ["ServiceID"] ) {

@@ -1,22 +1,22 @@
 <?php
 /* --------------------------------------------------------------------*
- * LogoutCommand.php                                                   *
+ * CheckSessionCommand.php                                             *
  * --------------------------------------------------------------------*
- * Description - This class allows users to log out of their account.  *
+ * Description - This class is used to validate user sessions.         *
  * --------------------------------------------------------------------*
  * Project: Classy Scheduler Web Server                                *
  * Author : Jacob A. McKim                                             *
- * Date Of Creation: 11 - 22 - 2015                                    *
+ * Date Of Creation: 11 - 23 - 2015                                    *
  * ------------------------------------------------------------------- */
 
 //===================================================================//
-//  NOTES & BUGS AS OF 11 - 22 - 2015                                //
+//  NOTES & BUGS AS OF 11 - 23 - 2015                                //
 //===================================================================//
 /*
  *
  */
 
-class LogoutCommand extends Command {
+class CheckSessionCommand extends Command {
 
     //---------------------------------------------------------------//
     // Class Atributes                                               //
@@ -94,20 +94,15 @@ class LogoutCommand extends Command {
 
           // TODO: 3. Brief Description of what is going to happen.
           try {
-            $sqlQuery = 'DELETE FROM session WHERE studentID = ? AND sessionKey = ?';
+            $sqlQuery = 'SELECT * FROM session WHERE studentID = ? AND sessionKey = ?
+                            AND NOW () BETWEEN createTime AND expireTime';
             $sqlParams = array ($this->requestContent["studentID"],$this->requestContent["sessionID"]);
 
             // Execute and build the login data result.
             if ($this->dbAccess->executeQuery ($sqlQuery,$sqlParams)) {
               $result = $this->dbAccess->getResults();
-
-              if ($result > 0) {
-                $commandResult = new commandResult ("success");
-              }
-              else {
-                $commandResult = new commandResult ("failed");
-                $commandResult->addValuePair ("Description","Session already logged out or doesn't exist.");
-              }
+              var_dump($result);
+              $commandResult = new commandResult ("success");
             }
 
             else {
@@ -124,7 +119,7 @@ class LogoutCommand extends Command {
 
         else {
         $commandResult = new commandResult ("invalidData");
-        $commandResult->addValuePair ("Description","Invalid input parameters for Logout.");
+        $commandResult->addValuePair ("Description","Session information required for requested service.");
         }
 
         // Return the command result.

@@ -76,7 +76,7 @@ class LogoutCommand extends Command {
         // --- Variable Declarations  -------------------------------//
 
         /* @var $commands (Array) Used to cross check the request.   */
-        $commandParams = array ("email", "password", "sessionID");
+        $commandParams = array ("studentID", "sessionID");
 
         /* @var $commandResult (commandResult) The result model.     */
         $commandResult;
@@ -94,7 +94,20 @@ class LogoutCommand extends Command {
 
           // TODO: 3. Brief Description of what is going to happen.
           try {
-            // TODO 4: Implement code.
+            $sqlQuery = 'DELETE FROM session WHERE studentID = ? AND sessionKey = ?';
+            $sqlParams = array ($this->requestContent["studentID"],$this->requestContent["sessionID"]);
+
+            // Execute and build the login data result.
+            if ($this->dbAccess->executeQuery ($sqlQuery,$sqlParams)) {
+              $result = $this->dbAccess->getResults();
+              var_dump($result);
+              $commandResult = new commandResult ("success");
+            }
+
+            else {
+              $commandResult = new commandResult ("systemError");
+              $commandResult->addValuePair ("Description","Database failure.");
+            }
           }
 
           catch (Exception $e) {

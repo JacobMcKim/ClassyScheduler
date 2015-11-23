@@ -87,72 +87,72 @@ class LoginCommand extends Command {
         /* @var $sqlQuery (object) The query to execute on service.  */
         $sqlQuery = NULL;
 
-
-        $uniqueID = ; // TODO 
+        /* @var $uniqueID (string) The session key to use for login. */
+        $uniqueID = uniqid("classyStudent_");
 
         // --- Main Routine ------------------------------------------//
 
         // Check if the request contains all necessary parameters.
         if ( $this->isValidContent ($this->requestContent, $commandParams) ) {
 
-          // Attempt to check the password and user name. 
+          // Attempt to check the password and user name.
           try {
-
-          	// Build sql check query. 
-            $sqlQuery = 'SELECT s.studentID, s.password, s.salt, i.firstname, i.lastname, 
-						    i.classStanding i.creditHours FROM student AS s 
-			            	JOIN studentinfo AS i 
-			            		ON s.studentID = i.studentID  
+            $sqlQuery = 'SELECT s.studentID, s.password, s.salt, i.firstname, i.lastname,
+						    i.classStanding i.creditHours FROM student AS s
+			            	JOIN studentinfo AS i
+			            		ON s.studentID = i.studentID
 			            	WHERE email = ?';
-            $sqlParams = array ($this->requestContent["email"]));
+            $sqlParams = array ($this->requestContent["email"]);
 
+            // Execute the search for the account.
             if ($this->dbAccess->executeQuery ($sqlQuery,$sqlParams)) {
-              $userDataRes = $this->dbAccess->getResults();
+              $result = $this->dbAccess->getResults();
 
               // check the password to see if it matches.
               if ($result != null) {
                 $checkPassword = $crypt(this->requestContent["password"]),
-                                                '$2a$07' . $result[0]["salt"]);
-                if ($checkPassword == $userDataRes[0]["password"]) {
-                	
-                    $sqlQuery = 'INSERT INTO session 
-                    		(studentID, sessionKey, createTime, expireTime) 
-                    		VALUES ?, ?, CURRENT_TIMESTAMP, NOW() + 30 MINUTE';
-            		$sqlParams = array ($userDataRes[0]["studentID"],$uniqueID);
+                                  '$2a$07' . $result[0]["salt"]);
 
-            		// Execute and build the login result. 
-            		if ($this->dbAccess->executeQuery ($sqlQuery,$sqlParams)) {
+                // If it matches build insert query to create session.
+                if ($checkPassword == $result[0]["password"]) {
+                  $sqlQuery = 'INSERT INTO session
+                      		(studentID, sessionKey, createTime, expireTime)
+                      		VALUES ?, ?, NOW(), NOW() + 30 MINUTE';
+              		$sqlParams = array ($result[0]["studentID"],$uniqueID);
 
-            		}
-            		else {
-        				$commandResult = new commandResult ("systemError");
-            			$commandResult->addValuePair ("Description","Database failure.");
-            		}
+              		// Execute and build the login data result.
+              		if ($this->dbAccess->executeQuery ($sqlQuery,$sqlParams)) {
+                      $commandResult = new commandResult ("success");
+                      $commandResult->addValuePair ("studentID",$result[0]["studentID"]);
+                      $commandResult->addValuePair ("sessionID",$uniqueID);
+                      $commandResult->addValuePair ("firstName",$result[0]["firstname"]);
+                      $commandResult->addValuePair ("lastName",$result[0]["lastname"]);
+                      $commandResult->addValuePair ("classStanding",$result[0]["classStanding"]);
+                      $commandResult->addValuePair ("creditHours",$result[0]["creditHours"]);
+              		}
 
+              		else { // Issue with insert query.
+          				      $commandResult = new commandResult ("systemError");
+              			    $commandResult->addValuePair ("Description","Database failure.");
+              		}
                 }
 
-                // Invalid password. 
-                else {
+                else { // Invalid password.
                   $commandResult = new commandResult ("failed");
                   $commandResult->addValuePair ("Description","Invalid email or password.");
                 }
-
-
               }
 
-              // Account not found. 
-              else {
+              else { // Account not found.
               	$commandResult = new commandResult ("failed");
                 $commandResult->addValuePair ("Description","Invalid email or password.");
               }
-
             }
 
-            else {
+            else { // issue with search query.
 	            $commandResult = new commandResult ("systemError");
 	            $commandResult->addValuePair ("Description","Database failure.");
             }
-
           }
 
           catch (Exception $e) {

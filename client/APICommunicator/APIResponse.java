@@ -54,7 +54,7 @@ public class APIResponse
      *****************************************************************/
     public APIResponse (int responseCode, String responseData) 
     {
-        if (responseCode == 200) {
+        if (responseCode >= 200 && responseCode < 300) {
             try {
                 keyValueList = new JSONObject(responseData);
                 
@@ -75,6 +75,10 @@ public class APIResponse
                         responseSuccess = APIResultEnum.SYSTEM_ERROR;
                     break;
                     
+                    case "sessionInvalid": 
+                        responseSuccess = APIResultEnum.SESSION_INVALID;
+                    break;
+                    
                     default:
                         responseSuccess = APIResultEnum.UNKNOWN;
                     break;
@@ -82,9 +86,16 @@ public class APIResponse
                 }
             }
             catch (Exception e) {
+                keyValueList = null;
                 
             }
         }
+        
+        else if (responseCode >= 400 && responseCode < 600) {
+            responseSuccess = APIResultEnum.SYSTEM_ERROR;
+        }
+        
+            
  
     }
     

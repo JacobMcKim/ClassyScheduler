@@ -55,6 +55,7 @@ public class APIRequest
         if (serviceType != null) {
             switch (serviceType) {
             
+                // -- Admin Panel Stuff --- //
                 case ADD_COURSE:
                     reqType = RequestTypeEnum.POST;
                     serviceID = "AddCourse";
@@ -65,14 +66,36 @@ public class APIRequest
                     serviceID = "DeleteCourse";
                 break;
                 
+                case UPDATE_COURSE: 
+                    reqType = RequestTypeEnum.POST;
+                    serviceID = "UpdateCourse";
+                break;
+                
+                // -- Account Services --- //
+                case LOGIN:
+                    reqType = RequestTypeEnum.POST;
+                    serviceID = "Login";
+                break; 
+                
+                case LOGOUT:
+                    reqType = RequestTypeEnum.POST;
+                    serviceID = "Logout";
+                break;
+                
+                // -- Student Services --- // 
+                case GET_SEMESTERS:
+                    reqType = RequestTypeEnum.POST;
+                    serviceID = "GetSemesters";
+                break; 
+                
                 case SEARCH_COURSES:
                     reqType = RequestTypeEnum.POST;
                     serviceID = "SearchCourse";
                 break;
                 
-                case UPDATE_COURSE: 
+                case GET_SCHEDULE:
                     reqType = RequestTypeEnum.POST;
-                    serviceID = "UpdateCourse";
+                    serviceID = "GetSchedule";
                 break;
                 
                 case UPDATE_SCHEDULE: 
@@ -80,6 +103,11 @@ public class APIRequest
                     serviceID = "UpdateSchedule";
                 break;
                 
+                case GET_FACULTY_RATINGS:
+                    reqType = RequestTypeEnum.POST;
+                    serviceID = "GetFacRatings";
+                break;
+
                 default:
                     // TODO: figure out how to handle this.
                 break;

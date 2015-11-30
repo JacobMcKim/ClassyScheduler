@@ -98,6 +98,36 @@ public class APIRequestTest
     
     // 4.
     @Test
+    public void testLoginRequestConstruct () {
+        request = new APIRequest(ServicesEnum.LOGIN);
+        assertEquals(request.getServiceName(), "Login");
+        assertEquals(request.getRequestType(), RequestTypeEnum.POST);
+        request = null;
+        
+    }
+  
+    // 5.
+    @Test
+    public void testLogoutRequestConstruct () {
+        request = new APIRequest(ServicesEnum.LOGOUT);
+        assertEquals(request.getServiceName(), "Logout");
+        assertEquals(request.getRequestType(), RequestTypeEnum.POST);
+        request = null;
+        
+    }
+    
+    // 6.
+    @Test
+    public void testGetSemestersRequestConstruct () {
+        request = new APIRequest(ServicesEnum.GET_SEMESTERS);
+        assertEquals(request.getServiceName(), "GetSemesters");
+        assertEquals(request.getRequestType(), RequestTypeEnum.POST);
+        request = null;
+        
+    }
+    
+    // 7.
+    @Test
     public void testUpdateCourseRequestConstruct () {
         request = new APIRequest(ServicesEnum.UPDATE_COURSE);
         assertEquals(request.getServiceName(), "UpdateCourse");
@@ -106,7 +136,17 @@ public class APIRequestTest
         
     }
     
-    // 5.
+    // 8.
+    @Test
+    public void testGetScheduleRequestConstruct () {
+        request = new APIRequest(ServicesEnum.GET_SCHEDULE);
+        assertEquals(request.getServiceName(), "GetSchedule");
+        assertEquals(request.getRequestType(), RequestTypeEnum.POST);
+        request = null;
+        
+    }
+    
+    // 9.
     @Test
     public void testUpdateScheduleRequestConstruct () {
         request = new APIRequest(ServicesEnum.UPDATE_SCHEDULE);
@@ -116,7 +156,17 @@ public class APIRequestTest
         
     }
     
-    // 6.
+    // 10.
+    @Test
+    public void testGetFacRatingsRequestConstruct () {
+        request = new APIRequest(ServicesEnum.GET_FACULTY_RATINGS);
+        assertEquals(request.getServiceName(), "GetFacRatings");
+        assertEquals(request.getRequestType(), RequestTypeEnum.POST);
+        request = null;
+        
+    }
+    
+    // 11.
     @Test
     public void testEmptyRequestConstruct () {
         request = new APIRequest(null);
@@ -131,7 +181,7 @@ public class APIRequestTest
     //  Property Creation Test Definitions                            //
     //----------------------------------------------------------------//
     
-    // 7.
+    // 12.
     @Test
     public void testStringaddRequestProperty () {
         request = new APIRequest(ServicesEnum.UPDATE_SCHEDULE);
@@ -141,7 +191,7 @@ public class APIRequestTest
         
     }
     
-    // 8.
+    // 13.
     @Test
     public void testIntegeraddRequestProperty () {
         request = new APIRequest(ServicesEnum.UPDATE_SCHEDULE);
@@ -151,7 +201,7 @@ public class APIRequestTest
         
     }
     
-    // 9.
+    // 14.
     @Test
     public void testFloataddRequestProperty () {
         request = new APIRequest(ServicesEnum.UPDATE_SCHEDULE);
@@ -161,7 +211,7 @@ public class APIRequestTest
         
     }
     
-    // 10.
+    // 15.
     @Test
     public void testNullAddRequestProperty () {
         request = new APIRequest(ServicesEnum.UPDATE_SCHEDULE);
@@ -170,7 +220,7 @@ public class APIRequestTest
         
     }
     
-    // 11.
+    // 16.
     @Test
     public void testNullAllAddRequestProperty () {
         request = new APIRequest(ServicesEnum.UPDATE_SCHEDULE);
@@ -183,7 +233,7 @@ public class APIRequestTest
     //  Property Deletion Test Definitions                            //
     //----------------------------------------------------------------//
     
-    // 12.
+    // 17.
     @Test
     public void testDeleteRequestProperty () {
         request = new APIRequest(ServicesEnum.UPDATE_SCHEDULE);
@@ -194,7 +244,7 @@ public class APIRequestTest
         
     }
     
-    // 13.
+    // 18.
     @Test
     public void testDeleteRequestPropertyNull () {
         request = new APIRequest(ServicesEnum.UPDATE_SCHEDULE);
@@ -209,7 +259,7 @@ public class APIRequestTest
     //  JSON Conversion Test Definitions                              //
     //----------------------------------------------------------------//
     
-    // 14.
+    // 19.
     @Test
     public void testToJSON () {
         request = new APIRequest(ServicesEnum.ADD_COURSE);
@@ -225,7 +275,7 @@ public class APIRequestTest
     }
     
     
-    // 15.
+    // 20.
     @Test
     public void testToJSONRequestEmpty () {
         request = new APIRequest(null);

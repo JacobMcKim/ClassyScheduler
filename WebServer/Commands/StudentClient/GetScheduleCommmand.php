@@ -148,22 +148,22 @@ class GetScheduleCommmand extends Command {
                     if ($result != null) {
                       foreach($result as &$resClass) {
                          $class = array ();
-                         $class["courseCode"] = $resSec["courseCode"];
-                         $class["courseID"] = $resSec["cID"];
-                         $class["courseTitle"] = $resSec["title"];
-                         $class["courseDescription"] = $resSec["courseCode"];
-                         $class["semesterCode"] = $resSec["semesterCode"];
-                         $class["sectionID"] = $resSec["sectionID"];
-                         $class["sectionCode"] = $resSec["sectionCode"];
-                         $class["profFirst"] = $resSec["firstName"];
-                         $class["profLast"] = $resSec["lastName"];
-                         $class["startTime"] = $resSec["startTime"];
-                         $class["endTime"] = $resSec["endTime"];
-                         $class["meetDays"] = $resSec["meetDays"];
-                         $class["building"] = $resSec["buildingName"];
-                         $class["room"] = $resSec["classroom"];
-                         $class["seats"] = $resSec["seats"];
-                         $class["seatsOpen"] = $resSec["seatsOpen"];
+                         $class["courseCode"] = $resClass["courseCode"];
+                         $class["courseID"] = $resClass["cID"];
+                         $class["courseTitle"] = $resClass["title"];
+                         $class["courseDescription"] = $resClass["courseCode"];
+                         $class["semesterCode"] = $resClass["semesterCode"];
+                         $class["sectionID"] = $resClass["sectionID"];
+                         $class["sectionCode"] = $resClass["sectionCode"];
+                         $class["profFirst"] = $resClass["firstName"];
+                         $class["profLast"] = $resClass["lastName"];
+                         $class["startTime"] = $resClass["startTime"];
+                         $class["endTime"] = $resClass["endTime"];
+                         $class["meetDays"] = $resClass["meetDays"];
+                         $class["building"] = $resClass["buildingName"];
+                         $class["room"] = $resClass["classroom"];
+                         $class["seats"] = $resClass["seats"];
+                         $class["seatsOpen"] = $resClass["seatsOpen"];
                          array_push($classList,$class);
                       }
 
@@ -207,6 +207,8 @@ class GetScheduleCommmand extends Command {
         $commandResult = new commandResult ("invalidData");
         $commandResult->addValuePair ("Description","Invalid input parameters for AddCourse.");
         }
+
+        return $commandResult;
 
     }
 

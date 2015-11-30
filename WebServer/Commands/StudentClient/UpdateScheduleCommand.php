@@ -116,7 +116,6 @@
               $sqlParams = array($this->requestContent["scheduleID"],$this->requestContent["sectionCodeID"]);
               if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
                 $result = $this->dbAccess->getResults();
-                var_dump($result);
               }
               else {
                 $commandResult = new commandResult ("systemError");
@@ -126,7 +125,7 @@
 
              // Determine which activity were preforming.
              if ($this->requestContent["operation"] == "add") {
-               if (count($result) == 0) {
+               if ($result == 0) {
                $sqlQuery = 'INSERT INTO scheduleitem (scheduleID,sectionCode) VALUES(?,?)';
                $updateSQL = 's.seatsOpen = s.seatsOpen - 1, ss.creditHours = ss.creditHours + t.creditHours';
                }
@@ -137,7 +136,7 @@
                }
              }
              else if ($this->requestContent["operation"] == "drop") {
-               if (count($result) > 0) {
+               if ($result > 0) {
                  $sqlQuery = 'DELETE FROM scheduleitem WHERE scheduleID = ? AND sectionCode = ?';
                  $sqlParams = array($this->requestContent["scheduleID"],$this->requestContent["sectionCodeID"]);
                  $updateSQL = 's.seatsOpen = s.seatsOpen + 1, ss.creditHours = ss.creditHours - t.creditHours';
@@ -156,23 +155,33 @@
 
              // Update the seat and hours recorded for the schedule.
              if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
-               $sqlQuery = 'UPDATE studentschedule AS ss
-                  JOIN section AS s ON
-                    s.sectionCode = ?
-                  JOIN timeblock AS t
-                    ON t.timeblockID = s.timeblockID
-                SET ' . $updateSQL . ' WHERE ss.scheduleID = ?';
-                $sqlParams = array($this->requestContent["sectionCodeID"],$this->requestContent["scheduleID"]);
+               $result = $this->dbAccess->getResults();
 
-                // Respond with a pass.
-                if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
-                  $commandResult = new commandResult ("success");
+               if ($result > 0) {
+                 $sqlQuery = 'UPDATE studentschedule AS ss
+                    JOIN section AS s ON
+                      s.sectionCode = ?
+                    JOIN timeblock AS t
+                      ON t.timeblockID = s.timeblockID
+                  SET ' . $updateSQL . ' WHERE ss.scheduleID = ?';
+                  $sqlParams = array($this->requestContent["sectionCodeID"],$this->requestContent["scheduleID"]);
+
+                  // Respond with a pass.
+                  if ($this->dbAccess->executeQuery($sqlQuery,$sqlParams)) {
+                    $commandResult = new commandResult ("success");
+                  }
+                  else {
+                    $commandResult = new commandResult ("systemError");
+                    $commandResult->addValuePair ("Description","Database failure.");
+                  }
                 }
+
                 else {
-                  $commandResult = new commandResult ("systemError");
-                  $commandResult->addValuePair ("Description","Database failure.");
+                  $commandResult = new commandResult ("failed");
+                  $commandResult->addValuePair ("Description","Desired Schedule or Section ID doesn't exist.");
                 }
               }
+
               else {
                 $commandResult = new commandResult ("systemError");
                 $commandResult->addValuePair ("Description","Database failure.");

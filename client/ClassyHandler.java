@@ -211,10 +211,8 @@ public class ClassyHandler {
                       // TODO: convert string times to int
                       String st = sTemp.getString("startTime");
                       st = st.substring(0,2);
-                      int stime = (int) Math.random()*(1400-900) + 900;
+                      int stime = Integer.parseInt(st)* 100;
                       int etime = stime + 100;
-                      //int stime = 1100;
-                      //int etime = 1200;
                       String meet = sTemp.getString("meetDays");
                       // TODO: implement building + room
                       // TODO: implement seats and seats open

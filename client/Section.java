@@ -15,15 +15,17 @@ public class Section {
    private int sID;
    private int sTime, eTime;
    private WeeklySchedule meet;
+   private Semester sem;
 
    // Creates a Setion with all the given information.
-   public Section(Course c, int s, int t1, int t2, String m) {
+   public Section(Course c, int s, int t1, int t2, String m, Semester s2) {
 
      course = c;
      sID = s;
      sTime = t1;
      eTime = t2;
      meet = new WeeklySchedule(m);
+     sem = s2;
    }
 
    public Course getCourse() { return course;}
@@ -31,6 +33,7 @@ public class Section {
    public int getSTime() { return sTime;}
    public int getETime() { return eTime;}
    public WeeklySchedule getMeetings() { return meet;}
+   public Semester getSem() {return sem;}
 
    // retruns true if there is a time conflict between this section and section
    // s, returns false other wise.
@@ -51,4 +54,10 @@ public class Section {
     }
     return false;
    }
+
+    public String toString() {
+        String s = course.toString();
+        s += "- " + sID;
+        return s;
+    }
 }

@@ -69,5 +69,18 @@ public class Course {
      return false;
    }
 
+    public String toString() {
+        String s = "";
+
+        if(dNum == 1)
+            s += "CIS ";
+        else if(dNum == 2)
+            s += "CFV ";
+        else
+            s += "XXX ";
+
+        s += cID;
+        return s;
+    }
 
 }

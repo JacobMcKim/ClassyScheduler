@@ -37,7 +37,7 @@ public class WeeklySchedule {
           result[1] = true;
         else if(chars[i] == 'w')
           result[2] = true;
-        else if(chars[i] == 'h')
+        else if(chars[i] == 'r')
           result[3] = true;
         else if(chars[i] == 'f')
           result[4] = true;

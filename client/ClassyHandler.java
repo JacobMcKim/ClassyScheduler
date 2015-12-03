@@ -28,12 +28,22 @@ public class ClassyHandler {
 
   private ArrayList<Course> searchBuffer;
   private ArrayList<Section> studentSched;
+  private Semester currSem;
 
   //Creates an a handler with empty feilds
   public ClassyHandler () {
 
     searchBuffer = new ArrayList<Course>();
     studentSched = new ArrayList<Section>();
+    currSem = new Semester(SemEnum.FALL, 16);
+  }
+
+  // Creates a handler set for the current semester
+  public ClassyHandler (Semester s) {
+
+      searchBuffer = new ArrayList<Course>();
+      studentSched = new ArrayList<Section>();
+      currSem = s;
   }
 
   //Creates a hadler with the given searchBuffer and studentSched
@@ -41,19 +51,24 @@ public class ClassyHandler {
 
     searchBuffer = courseL;
     studentSched = sched;
+      currSem = new Semester(SemEnum.FALL, 16);
   }
 
   //Temporary predefined Constructor
   public ClassyHandler(int i){
 
-    Course cis350 = new Course(1, 350, "Software Engineering",
+      currSem = new Semester(SemEnum.FALL, 16);
+
+      Course cis350 = new Course(1, 350, "Software Engineering",
                                                             "This is a class.");
     Course cis263 = new Course(1, 263, "Data Structures", "This is a class.");
 
-    Section s1 = new Section(cis350, 1, 1000, 1050, "MWF");
-    Section s2 = new Section(cis350, 2, 1100, 1150, "MWF");
-    Section s3 = new Section(cis263, 1, 1000, 1050, "MWF");
-    Section s4 = new Section(cis263, 2, 1100, 1150, "MWF");
+
+
+    Section s1 = new Section(cis350, 1, 1000, 1050, "MWF", currSem);
+    Section s2 = new Section(cis350, 2, 1100, 1150, "MWF", currSem);
+    Section s3 = new Section(cis263, 1, 1000, 1050, "MWF", currSem);
+    Section s4 = new Section(cis263, 2, 1100, 1150, "MWF", currSem);
 
     cis350.addSection(s1);
     cis350.addSection(s2);
@@ -93,6 +108,12 @@ public class ClassyHandler {
     return temp;
   }
 
+  // Set the current Semester
+  public void setCurrSem(Semester s) {
+      currSem = s;
+
+      // TODO: load new search buffer/schedule based on new semester
+  }
   // Adds given section to student schedule checking for time conflicts
   // Returns index of inserted element if successful, -1 if  unsuccessful.
   public int addSectionToSched(Section s) {
@@ -138,7 +159,7 @@ public class ClassyHandler {
     JSONObject data;
     APIResponse resp;
     req.addRequestProperty("searchPhrase", "*");
-    req.addRequestProperty("semID",1);
+    req.addRequestProperty("semesterID",1);
 
     if(comm.sendRequest(req)) {
 
@@ -162,10 +183,12 @@ public class ClassyHandler {
 
                   String dep = cTemp.getString("department");
                   int dID;
-                  if(dep == "CIS")
+                  if(dep.equals("CIS"))
                       dID = 1;
-                  else
+                  else if(dep.equals("CFV"))
                       dID = 2;
+                  else
+                      dID = 3;
 
                   int cID = Integer.parseInt(cTemp.getString("courseID"));
                   String title = cTemp.getString("title");
@@ -181,16 +204,23 @@ public class ClassyHandler {
                       JSONObject sTemp = sList.getJSONObject(j);
 
                       int sID = Integer.parseInt(sTemp.getString("sectionID"));
+
+                      // TODO: implement semester check
+                      Semester sem = new Semester(SemEnum.FALL, 16);
                       // TODO: implement professor
                       // TODO: convert string times to int
-                      int stime = 1200;
-                      int etime = 1300;
+                      String st = sTemp.getString("startTime");
+                      st = st.substring(0,2);
+                      int stime = (int) Math.random()*(1400-900) + 900;
+                      int etime = stime + 100;
+                      //int stime = 1100;
+                      //int etime = 1200;
                       String meet = sTemp.getString("meetDays");
                       // TODO: implement building + room
                       // TODO: implement seats and seats open
 
                       //Create Section and add it to course's section list
-                      Section tSection = new Section(tCourse,sID,stime,etime,meet);
+                      Section tSection = new Section(tCourse,sID,stime,etime,meet,sem);
                       tCourse.addSection(tSection);
                   }
 

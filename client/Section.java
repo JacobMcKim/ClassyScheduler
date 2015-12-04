@@ -13,27 +13,35 @@ public class Section {
 
    private Course course;
    private int sID;
-   private int sTime, eTime;
+   private int sTime, eTime, seats, openSeats;
+   private String prof, room;
    private WeeklySchedule meet;
-   private Semester sem;
 
    // Creates a Setion with all the given information.
-   public Section(Course c, int s, int t1, int t2, String m, Semester s2) {
+   public Section(Course c, int s, int t1, int t2, String m) {
 
      course = c;
      sID = s;
      sTime = t1;
      eTime = t2;
      meet = new WeeklySchedule(m);
-     sem = s2;
    }
 
    public Course getCourse() { return course;}
    public int getSID() { return sID;}
    public int getSTime() { return sTime;}
    public int getETime() { return eTime;}
+   public String getProf() { return prof;}
    public WeeklySchedule getMeetings() { return meet;}
-   public Semester getSem() {return sem;}
+   public String getRoom() { return room;}
+   public int getSeats() { return seats;}
+   public int getOpenSeats() {return  openSeats;}
+
+   public void setProf(String n) {prof = n;}
+   public void setRoom(String r) {room = r;}
+   public void setSeats(int s) {seats = s;}
+   public void setOpenSeats(int s) {openSeats = s;}
+
 
    // retruns true if there is a time conflict between this section and section
    // s, returns false other wise.

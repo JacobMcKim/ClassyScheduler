@@ -65,10 +65,10 @@ public class ClassyHandler {
 
 
 
-    Section s1 = new Section(cis350, 1, 1000, 1050, "MWF", currSem);
-    Section s2 = new Section(cis350, 2, 1100, 1150, "MWF", currSem);
-    Section s3 = new Section(cis263, 1, 1000, 1050, "MWF", currSem);
-    Section s4 = new Section(cis263, 2, 1100, 1150, "MWF", currSem);
+    Section s1 = new Section(cis350, 1, 1000, 1050, "MWF");
+    Section s2 = new Section(cis350, 2, 1100, 1150, "MWF");
+    Section s3 = new Section(cis263, 1, 1000, 1050, "MWF");
+    Section s4 = new Section(cis263, 2, 1100, 1150, "MWF");
 
     cis350.addSection(s1);
     cis350.addSection(s2);
@@ -193,10 +193,10 @@ public class ClassyHandler {
                   int cID = Integer.parseInt(cTemp.getString("courseID"));
                   String title = cTemp.getString("title");
                   String desc = cTemp.getString("Description");
-                  // TODO: implement credit hours
+                  int crd = cTemp.getInt("creditHours");
 
                   //Create course
-                  Course tCourse = new Course(dID,cID,title,desc);
+                  Course tCourse = new Course(dID,cID,title,crd,desc);
                   JSONArray sList = cTemp.getJSONArray("sections");
 
                   // parse all the the sections of the course
@@ -205,20 +205,24 @@ public class ClassyHandler {
 
                       int sID = Integer.parseInt(sTemp.getString("sectionID"));
 
-                      // TODO: implement semester check
-                      Semester sem = new Semester(SemEnum.FALL, 16);
-                      // TODO: implement professor
-                      // TODO: convert string times to int
+                      String p = sTemp.getString("profFirst") + " " + sTemp.getString("profLast");
+
                       String st = sTemp.getString("startTime");
                       st = st.substring(0,2);
                       int stime = Integer.parseInt(st)* 100;
                       int etime = stime + 100;
+
                       String meet = sTemp.getString("meetDays");
-                      // TODO: implement building + room
-                      // TODO: implement seats and seats open
+                      String r = sTemp.getString("building") + " " + sTemp.getString("room");
+                      int s = sTemp.getInt("seats");
+                      int o = sTemp.getInt("seatsOpen");
 
                       //Create Section and add it to course's section list
-                      Section tSection = new Section(tCourse,sID,stime,etime,meet,sem);
+                      Section tSection = new Section(tCourse,sID,stime,etime,meet);
+                      tSection.setRoom(r);
+                      tSection.setSeats(s);
+                      tSection.setOpenSeats(o);
+
                       tCourse.addSection(tSection);
                   }
 

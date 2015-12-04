@@ -12,7 +12,7 @@ import java.util.ArrayList;
 
 public class Course {
 
-   private int dNum, cID;
+   private int dNum, cID, cred;
    String title;
    String description;
    ArrayList<Section> sectionList;
@@ -26,6 +26,16 @@ public class Course {
      description = desc;
      sectionList = new ArrayList<Section>();
    }
+
+    public Course(int d, int c, String t, int cr, String desc) {
+
+        dNum = d;
+        cID = c;
+        title = t;
+        cred = cr;
+        description = desc;
+        sectionList = new ArrayList<Section>();
+    }
 
    // Creates a Course with the given Section list
    public Course(int d, int c, String t, String desc, ArrayList<Section> sl) {

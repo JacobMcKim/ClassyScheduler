@@ -1,5 +1,6 @@
 import org.junit.Test;
 
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 
 import static org.junit.Assert.*;
@@ -75,5 +76,14 @@ public class ClassyHandlerTest {
 
         classy.loadSearchBuffer("CIS");
         assertEquals(classy.getSearchBuffer().size(),4);
+    }
+
+    @Test
+    public void testLoadSemester() {
+
+        ClassyHandler classy = new ClassyHandler();
+        ArrayList<Semester> sems = classy.getSemseters();
+
+        assertEquals(sems.size(), 8);
     }
 }

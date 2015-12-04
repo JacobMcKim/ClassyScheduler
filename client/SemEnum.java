@@ -4,5 +4,6 @@
 public enum SemEnum {
     WINTER,
     FALL,
-    SUMMER
+    SUMMER_A,
+    SUMMER_B
 }

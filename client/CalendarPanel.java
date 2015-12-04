@@ -98,7 +98,6 @@ public class CalendarPanel extends JPanel{
 	public CalendarPanel(){
 
 		classy = new ClassyHandler();
-		classy.loadDefaultSearchBuff();
 		cal = new CalendarModel();
 		secList = new DefaultListModel<Section>();
 		list = new JList<Course>(classy.getArraySearchBuf());

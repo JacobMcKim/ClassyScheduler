@@ -12,7 +12,7 @@ public class SectionTest {
 
         Course cis350 = new Course(1, 350, "Software Engineering", "This is a class.");
 
-        Semester s = new Semester(SemEnum.FALL, 15);
+        Semester s = new Semester(SemEnum.FALL, 15,1);
 
         Section s1 = new Section(cis350, 1, 1000, 1050, "MWF");
         Section s2 = new Section(cis350, 2, 1100, 1150, "MWF");

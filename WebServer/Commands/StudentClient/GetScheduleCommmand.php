@@ -2,15 +2,15 @@
 /* --------------------------------------------------------------------*
  * GetScheduleCommmand.php                                             *
  * --------------------------------------------------------------------*
- * Description - TODO (Class Description here)                         *
+ * Description - This class gets a student schedule from the server.   *
  * --------------------------------------------------------------------*
  * Project: Classy Scheduler Web Server                                *
- * Author : TODO ( Your name here)                                     *
- * Date Of Creation: 10 - TODO (day here) - 2015                       *
+ * Author : Jacob A. McKim                                             *
+ * Date Of Creation: 11 - 22 - 2015                                    *
  * ------------------------------------------------------------------- */
 
 //===================================================================//
-//  NOTES & BUGS AS OF 10- TODO (day here) -2015                     //
+//  NOTES & BUGS AS OF 11 - 22 - 2015                                //
 //===================================================================//
 /*
  *
@@ -151,7 +151,8 @@ class GetScheduleCommmand extends Command {
                          $class["courseCode"] = $resClass["courseCode"];
                          $class["courseID"] = $resClass["cID"];
                          $class["courseTitle"] = $resClass["title"];
-                         $class["courseDescription"] = $resClass["courseCode"];
+                         $class["departmentName"] = $resClass["depName"];
+                         $class["courseDescription"] = $resClass["description"];
                          $class["semesterCode"] = $resClass["semesterCode"];
                          $class["sectionID"] = $resClass["sectionID"];
                          $class["sectionCode"] = $resClass["sectionCode"];
@@ -205,7 +206,7 @@ class GetScheduleCommmand extends Command {
 
         else {
         $commandResult = new commandResult ("invalidData");
-        $commandResult->addValuePair ("Description","Invalid input parameters for AddCourse.");
+        $commandResult->addValuePair ("Description","Invalid input parameters for GetSchedule.");
         }
 
         return $commandResult;

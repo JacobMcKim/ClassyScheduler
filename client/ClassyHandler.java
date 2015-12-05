@@ -42,9 +42,7 @@ public class ClassyHandler {
         studentSched = new ArrayList<Section>();
         semesters = new ArrayList<Semester>();
 
-        loadSemesters();
-        currSem = semesters.get(0);
-        loadDefaultSearchBuff();
+
     }
 
     // Creates a handler set for the current semester
@@ -160,6 +158,10 @@ public class ClassyHandler {
                 if(s.equals("success")){
                     student = new Student(data);
                     sessionID = data.getString("sessionID");
+
+                    loadSemesters();
+                    currSem = semesters.get(0);
+                    loadDefaultSearchBuff();
                 } else{
                     // TODO: handle response failure
                 }
@@ -212,6 +214,8 @@ public class ClassyHandler {
 
         req.addRequestProperty("studentID", student.getStuID());
         req.addRequestProperty("semesterID", currSem.getID());
+        req.addRequestProperty("sessionID", sessionID);
+
 
         if(comm.sendRequest(req)) {
 
@@ -279,6 +283,8 @@ public class ClassyHandler {
     // Returns index of inserted element if successful, -1 if  unsuccessful.
     public int addSectionToSched(Section s) {
 
+        // TODO: update sched on server
+
         if (!studentSched.contains(s)) {
             for (int i = 0; i < studentSched.size(); i++) {
                 if (s.checkTimeConflict(studentSched.get(i)))
@@ -304,6 +310,9 @@ public class ClassyHandler {
         APIResponse resp;
         req.addRequestProperty("searchPhrase", "*");
         req.addRequestProperty("semesterID", currSem.getID());
+        req.addRequestProperty("sessionID", sessionID);
+        req.addRequestProperty("studentID", student.getStuID());
+
 
         if (comm.sendRequest(req)) {
 
@@ -324,7 +333,10 @@ public class ClassyHandler {
         JSONObject data;
         APIResponse resp;
         req.addRequestProperty("searchPhrase", s);
-        req.addRequestProperty("semID", currSem.getID());
+        req.addRequestProperty("semesterID", currSem.getID());
+        req.addRequestProperty("sessionID", sessionID);
+        req.addRequestProperty("studentID", student.getStuID());
+
 
         if (comm.sendRequest(req)) {
             resp = comm.getRequestResult();
@@ -341,6 +353,10 @@ public class ClassyHandler {
 
         JSONObject data;
         APIResponse resp;
+
+        req.addRequestProperty("sessionID", sessionID);
+        req.addRequestProperty("studentID", student.getStuID());
+
 
         if(comm.sendRequest(req)) {
             

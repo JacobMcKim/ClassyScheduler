@@ -53,6 +53,7 @@ public class ClassyHandlerTest {
     public void testLoadDefaultSearchBuff() throws Exception {
 
         ClassyHandler classy = new ClassyHandler();
+        classy.login("mckimj@mail.gvsu.edu", "jacobm");
         classy.loadDefaultSearchBuff();
 
         ArrayList<Course> searchBuf = classy.getSearchBuffer();
@@ -63,28 +64,33 @@ public class ClassyHandlerTest {
         assertEquals(searchBuf.get(2).getSectionList().size(), 1);
         assertEquals(searchBuf.get(3).getSectionList().size(), 1);
         assertEquals(searchBuf.get(4).getSectionList().size(), 1);
+
+        classy.logout();
     }
 
     @Test
     public void testLoadSearchBuffer() {
 
         ClassyHandler classy = new ClassyHandler();
-        classy.loadDefaultSearchBuff();
+        classy.login("mckimj@mail.gvsu.edu", "jacobm");
 
         classy.loadSearchBuffer("CIS 350");
         assertEquals(classy.getSearchBuffer().size(),1);
 
         classy.loadSearchBuffer("CIS");
         assertEquals(classy.getSearchBuffer().size(),4);
+        classy.logout();
     }
 
     @Test
     public void testLoadSemester() {
 
         ClassyHandler classy = new ClassyHandler();
+        classy.login("mckimj@mail.gvsu.edu", "jacobm");
         ArrayList<Semester> sems = classy.getSemseters();
 
         assertEquals(sems.size(), 8);
+        classy.logout();
     }
 
     @Test

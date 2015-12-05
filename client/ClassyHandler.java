@@ -32,6 +32,8 @@ public class ClassyHandler {
     private ArrayList<Section> studentSched;
     private ArrayList<Semester> semesters;
     private Semester currSem;
+    private Student student;
+    private String sessionID;
 
     //Creates an a handler with empty feilds
     public ClassyHandler() {
@@ -103,6 +105,8 @@ public class ClassyHandler {
         return semesters;
     }
 
+    public Student getStudent() {return student;}
+
     // Getter methods that return search buffer and student sched in the form of
     // arrays
     public Course[] getArraySearchBuf() {
@@ -123,6 +127,69 @@ public class ClassyHandler {
             temp[i] = studentSched.get(i);
         }
         return temp;
+    }
+
+    public void login(String email, String pass) {
+        // TODO: Login
+
+        APICommunicator comm = new APICommunicator();
+        APIRequest req = new APIRequest(ServicesEnum.LOGIN);
+
+        JSONObject data;
+        APIResponse resp;
+
+        req.addRequestProperty("email", email);
+        req.addRequestProperty("password", pass);
+
+        if(comm.sendRequest(req)) {
+
+            resp = comm.getRequestResult();
+            data = resp.getResponseList();
+
+            try {
+
+                String s = data.getString("Response");
+                if(s.equals("success")){
+                    student = new Student(data);
+                    sessionID = data.getString("sessionID");
+                } else{
+                    // TODO: handle response failure
+                }
+
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
+    }
+
+    public void logout() {
+
+        APICommunicator comm = new APICommunicator();
+        APIRequest req = new APIRequest(ServicesEnum.LOGOUT);
+
+        JSONObject data;
+        APIResponse resp;
+
+        req.addRequestProperty("studentID", student.getStuID());
+        req.addRequestProperty("sessionID", sessionID);
+
+        if(comm.sendRequest(req)) {
+
+            resp = comm.getRequestResult();
+            data = resp.getResponseList();
+
+            try {
+                String s = data.getString("Response");
+                if(s.equals("success")){
+                    studentSched.clear();
+                    student = null;
+                }else{
+                    // TODO: handle
+                }
+            } catch(Exception e) {
+                System.out.println(e.getMessage());
+            }
+        }
     }
 
     // Set the current Semester

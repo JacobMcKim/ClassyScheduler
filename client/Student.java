@@ -1,3 +1,6 @@
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /**
  * Created by zack on 04/12/15.
  */
@@ -17,10 +20,23 @@ public class Student {
         credits =cr;
     }
 
+    public Student(JSONObject obj) throws JSONException {
+        parseJSONObject(obj);
+    }
+
     public int getStuID() {return stuID;}
     public String getfName() {return fName;}
     public String getlName() {return lName;}
     public Standing getStanding() {return standing;}
+
+    private void parseJSONObject(JSONObject obj) throws JSONException {
+
+        stuID = obj.getInt("studentID");
+        fName = obj.getString("firstName");
+        lName = obj.getString("lastName");
+        standing = parseStanding(obj.getString("classStanding"));
+        credits = obj.getInt("creditHours");
+    }
 
     private Standing parseStanding(String s) {
 

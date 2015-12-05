@@ -86,4 +86,17 @@ public class ClassyHandlerTest {
 
         assertEquals(sems.size(), 8);
     }
+
+    @Test
+    public void testLoginLogout() {
+
+        ClassyHandler classy = new ClassyHandler();
+
+        classy.login("mckims@mail.gvsu.edu", "samm");
+        assertNotEquals(classy.getStudent(), null);
+
+        classy.logout();
+        assertTrue(classy.getStudent() == null);
+        assertTrue(classy.getStudentSched().size() == 0);
+    }
 }

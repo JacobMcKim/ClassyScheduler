@@ -99,4 +99,19 @@ public class ClassyHandlerTest {
         assertTrue(classy.getStudent() == null);
         assertTrue(classy.getStudentSched().size() == 0);
     }
+
+    @Test
+    public void testLoadStudentSchedule() {
+
+        ClassyHandler classy = new ClassyHandler();
+
+        classy.login("mckimj@mail.gvsu.edu", "jacobm");
+
+        classy.loadStudentSched();
+
+        assertTrue(classy.getStudentSched().size() == 3);
+
+        classy.logout();
+
+    }
 }

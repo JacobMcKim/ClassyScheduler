@@ -129,6 +129,14 @@ public class ClassyHandler {
         return temp;
     }
 
+    // Set the current Semester
+    public void setCurrSem(Semester s) {
+
+        currSem = s;
+
+        loadDefaultSearchBuff();
+    }
+
     public void login(String email, String pass) {
         // TODO: Login
 
@@ -192,12 +200,79 @@ public class ClassyHandler {
         }
     }
 
-    // Set the current Semester
-    public void setCurrSem(Semester s) {
+    public void loadStudentSched() {
 
-        currSem = s;
+        studentSched.clear();
 
-        loadDefaultSearchBuff();
+        APICommunicator comm = new APICommunicator();
+        APIRequest req = new APIRequest(ServicesEnum.GET_SCHEDULE);
+
+        JSONObject data;
+        APIResponse resp;
+
+        req.addRequestProperty("studentID", student.getStuID());
+        req.addRequestProperty("semesterID", currSem.getID());
+
+        if(comm.sendRequest(req)) {
+
+            resp = comm.getRequestResult();
+            data = resp.getResponseList();
+
+            try{
+
+                String s = data.getString("Response");
+                if(s.equals("success")){
+
+                    JSONObject schedTemp = data.getJSONObject("scheduleData");
+                    JSONArray schedList =schedTemp.getJSONArray("classes");
+
+                    for(int i = 0; i <schedList.length(); i++){
+                        JSONObject sTemp = schedList.getJSONObject(i);
+
+                        String dep = sTemp.getString("departmentName");
+                        int dID;
+                        if (dep.equals("CIS"))
+                            dID = 1;
+                        else if (dep.equals("CFV"))
+                            dID = 2;
+                        else
+                            dID = 3;
+
+                        int c = sTemp.getInt("courseID");
+                        String t = sTemp.getString("courseTitle");
+                        String des = sTemp.getString("courseDescription");
+
+                        Course course = new Course(dID,c,t,des);
+
+                        int sID = sTemp.getInt("sectionID");
+                        String p = sTemp.getString("profFirst") + " " +sTemp.getString("profLast");
+
+                        String st = sTemp.getString("startTime");
+                        st = st.substring(0, 2);
+                        int stime = Integer.parseInt(st) * 100;
+                        int etime = stime + 100;
+
+                        String meet = sTemp.getString("meetDays");
+                        String r = sTemp.getString("building") + " " + sTemp.getString("room");
+                        int seat = sTemp.getInt("seats");
+                        int o = sTemp.getInt("seatsOpen");
+
+                        Section tSection = new Section(course, sID, stime, etime, meet);
+                        tSection.setRoom(r);
+                        tSection.setSeats(seat);
+                        tSection.setOpenSeats(o);
+                        tSection.setProf(p);
+
+                        studentSched.add(tSection);
+
+                    }
+                }
+            } catch (Exception e) {
+                System.out.println(e.getMessage());
+            }
+        } else {
+            //TODO: Handling
+        }
     }
 
     // Adds given section to student schedule checking for time conflicts
@@ -220,6 +295,8 @@ public class ClassyHandler {
 
     public void loadDefaultSearchBuff() {
 
+        searchBuffer.clear();
+
         APICommunicator comm = new APICommunicator();
         APIRequest req = new APIRequest(ServicesEnum.SEARCH_COURSES);
 
@@ -238,6 +315,8 @@ public class ClassyHandler {
     }
 
     public void loadSearchBuffer(String s) {
+
+        searchBuffer.clear();
 
         APICommunicator comm = new APICommunicator();
         APIRequest req = new APIRequest(ServicesEnum.SEARCH_COURSES);
@@ -353,6 +432,7 @@ public class ClassyHandler {
                         tSection.setRoom(r);
                         tSection.setSeats(s);
                         tSection.setOpenSeats(o);
+                        tSection.setProf(p);
 
                         tCourse.addSection(tSection);
                     }

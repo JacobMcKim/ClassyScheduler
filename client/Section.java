@@ -66,7 +66,7 @@ public class Section {
 
     public String toString() {
         String s = course.toString();
-        s += "- " + sID;
+        s += "- " + sID + " " + sTime + "-" +eTime;
         return s;
     }
 }

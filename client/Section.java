@@ -69,4 +69,18 @@ public class Section {
         s += "- " + sID + " " + sTime + "-" +eTime;
         return s;
     }
+
+    public String getDescription() {
+        String s =
+                course.toString();
+        s += "- " + sID + "\n" +
+                "Start time: " + sTime + "\n" +
+                "End time: " + eTime + "\n" +
+                "Meet days: " + meet + "\n" +
+                "Professor: " + prof + "\n" +
+                "Location: " + room + "\n" +
+                "Seats: " + openSeats + "/" + seats + "\n";
+
+        return s;
+    }
 }

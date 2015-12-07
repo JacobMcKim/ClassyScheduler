@@ -29,6 +29,10 @@ public class Student {
     public String getlName() {return lName;}
     public Standing getStanding() {return standing;}
 
+    public String toString() {
+        return fName + " " + lName;
+    }
+
     private void parseJSONObject(JSONObject obj) throws JSONException {
 
         stuID = obj.getInt("studentID");

@@ -121,13 +121,15 @@ public class ClassyHandlerTest {
     }
 
     @Test
-    public void testAddSectionToSchedule() {
+    public void testAddRemoveSectionToSchedule() {
 
         ClassyHandler classy = new ClassyHandler();
 
         classy.login("drescherz@mail.gvsu.edu", "zackd");
 
         assertTrue(classy.addSectionToSched(classy.getSearchBuffer().get(2).getSection(0)) >= 0);
+        assertTrue(classy.removeSectionFromSched(classy.getStudentSched().get(
+                                                                        classy.getStudentSched().size() -1)));
         classy.logout();
     }
 

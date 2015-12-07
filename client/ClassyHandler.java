@@ -287,8 +287,6 @@ public class ClassyHandler {
     // Returns index of inserted element if successful, -1 if  unsuccessful.
     public int addSectionToSched(Section s) {
 
-        // TODO: update sched on server
-
         if (!studentSched.contains(s)) {
             for (int i = 0; i < studentSched.size(); i++) {
                 if (s.checkTimeConflict(studentSched.get(i)))
@@ -304,6 +302,43 @@ public class ClassyHandler {
         } else
             return -1;
 
+    }
+
+    public boolean removeSectionFromSched(Section s) {
+
+        if(studentSched.contains(s)) {
+
+            if(updateSchedule(s, "drop")) {
+
+                studentSched.remove(s);
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    public boolean clearScehdule() {
+
+        ArrayList<Section> schedTemp = studentSched;
+        ArrayList<Section> removed = new ArrayList<Section>();
+
+        while(!schedTemp.isEmpty()) {
+
+            Section s = schedTemp.remove(0);
+
+            if (removeSectionFromSched(s)){
+
+                removed.add(s);
+            }else{
+
+                // TODO: Re-add courses on schedule
+                return false;
+            }
+        }
+
+        studentSched = schedTemp;
+        return true;
     }
 
     public void loadDefaultSearchBuff() {

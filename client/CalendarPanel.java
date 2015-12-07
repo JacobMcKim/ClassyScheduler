@@ -1,23 +1,19 @@
-package packageCal;
 /*****************************************************************************
-* CalendarPanel
-* 
-* Student User Interface
-*
-* Created by Kristopher Trevino
-* Last edited on 11.15.15 ZD
-******************************************************************************
-* Todo:
-* Add registered courses to a JList
-* Add JList of registered courses to Web Registered Panel
-* Make JTextField for course search tool
-* Add Description of course to right panel
-* Make action event for StartOver button 
-******************************************************************************/
+ * CalendarPanel
+ *
+ * Student User Interface
+ *
+ * Created by Kristopher Trevino
+ * Last edited on 11.15.15 ZD
+ ******************************************************************************
+ * Todo:
+ * Add registered courses to a JList
+ * Add JList of registered courses to Web Registered Panel
+ * Make JTextField for course search tool
+ * Add Description of course to right panel
+ * Make action event for StartOver button
+ ******************************************************************************/
 import java.awt.*;
-
-import packageCal.Course;
-
 import java.awt.event.*;
 import java.util.*;
 
@@ -26,40 +22,39 @@ import javax.swing.border.TitledBorder;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import packageCal.Cell;
 
 public class CalendarPanel extends JPanel{
 
 	/** Buttons for GUI **/
-	private JButton addClass, startOver, removeClass, save, searchButton;
-	
+	private JButton addClass, startOver, searchButton;
+
 	/** Size of screen **/
 	Dimension screenSize;
-	
+
 	/** All panels for GUI **/
 	private JPanel leftPanel, centerPanel, rightPanel, buttonPanel, coursePanel, searchPanel, sectionPanel, calendarPanel, registeredList;
-	
+
 	/** Labels for all of the panels **/
 	private JLabel leftLabel, centerLabel, rightLabel, courseLabel, sectionsLabel, searchLabel, registered, registeredLabel;
-	
+
 	/** Panels for calendar **/
 	private JPanel[][] calendar;
-	
+
 	/** Cells that determine if calendar slots are taken or empty **/
 	private Cell[][] iCalendar;
-	
+
 	private int rows;
 	private int columns;
-	
+
 	/** Object of Calendar model **/
 	private CalendarModel cal;
-	
+
 	/** Weekday labels for Calendar panel **/
 	private String[] days = {"Monday", "Tuesday","Wednesday", "Thursday", "Friday", "Saturday", "Sunday"};
-	
+
 	/** Class times label for Calendar panel **/
 	private String[] time = {"8am", "9am", "10am","11am","12pm","1pm","2pm","3pm","4pm","5pm","6pm","7pm","8pm","9pm"};
-	
+
 	/** Border for class times **/
 	private TitledBorder tb;
 
@@ -68,68 +63,65 @@ public class CalendarPanel extends JPanel{
 
 	/** List of Sections **/
 	private JList<Section> listSec;
-	
+
 	/** Description of Course **/
 	JTextField description;
-	
+
 	/** List of Registered Courses **/
 	private JList<Course> webRegistered;
-	
+
 	/** Y-Coordinate of calendar cell **/
 	private ArrayList<Integer> y;
-	
+
 	/** X-Coordinate of calendar cell **/
 	int x;
-	
+
 	/** List of sections within a course **/
 	DefaultListModel<Section> secList;
-	
+
 	DefaultListModel<Course> searchCourse;
-	
+
 	/** Searches classes **/
 	JTextField search;
-	
+
 	Course c;
-	
+
 	/** Default panel background color **/
 	Color defaultColor;
 
 	/** Creates object for handler **/
 	private ClassyHandler classy;
-	
-	private String courseText;
-	
+
 	/********************************************************************
-	* Constructor: Sets up the GUI	
-	*******************************************************************/
+	 * Constructor: Sets up the GUI
+	 *******************************************************************/
 	public CalendarPanel(){
 
-		classy = new ClassyHandler(1); 
+		classy = new ClassyHandler();
 		cal = new CalendarModel();
 		secList = new DefaultListModel<Section>();
 		list = new JList<Course>(classy.getArraySearchBuf());
 		listSec = new JList<Section>(secList);
 		webRegistered = new JList<Course>(cal.getModelList());
-		 
+
 		//size for calendar panel
 		rows = 15;
 		columns = 8;
-		
+
 		//sets up overall CalendarPanel
 		setLayout (new BorderLayout());
 		setBackground(Color.gray);
 		screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		
+
 		//LEFT PANEL
-		//TODO name of student that is logged in
-		leftLabel = new JLabel ("Name of Student");
+		leftLabel = new JLabel ("Courses");
 		leftPanel = new JPanel();
 		leftPanel.setLayout(new BoxLayout(leftPanel, BoxLayout.Y_AXIS));
 		leftPanel.setPreferredSize(new Dimension((screenSize.width / 5), screenSize.height));
 		leftPanel.setBackground(Color.gray);
 		leftPanel.add(leftLabel);
 		leftPanel.add(Box.createVerticalGlue());
-		
+
 		//LEFT PANEL-->Search Panel
 		//TODO TextField
 		searchPanel = new JPanel();
@@ -154,7 +146,7 @@ public class CalendarPanel extends JPanel{
 		list.addListSelectionListener(new CourseListener());
 		list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		coursePanel.add(listScroller);
-		leftPanel.add(coursePanel);				
+		leftPanel.add(coursePanel);
 
 		//LEFT PANEL-->Section1 Panel
 		sectionPanel = new JPanel();
@@ -168,10 +160,10 @@ public class CalendarPanel extends JPanel{
 		listSec.addListSelectionListener(new SectionListener());
 		listSec.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		sectionPanel.add(listScroller1);
-		leftPanel.add(sectionPanel);	
+		leftPanel.add(sectionPanel);
 		sectionPanel.setVisible(false);
 
-		
+
 		//LEFT PANEL-->Web Registered Panel
 		registeredList = new JPanel();
 		registeredList.setPreferredSize(new Dimension((screenSize.width / 5), (screenSize.height /4)));
@@ -181,22 +173,13 @@ public class CalendarPanel extends JPanel{
 		JScrollPane listScroller3 = new JScrollPane(webRegistered);
 		listScroller3.setPreferredSize(new Dimension(220, 60));
 		listScroller3.setAlignmentX(LEFT_ALIGNMENT);
-		webRegistered.addListSelectionListener(new RegisteredListener());
-		webRegistered.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		registeredList.add(listScroller3);
-		//buttons 
+		leftPanel.add(registeredList);
+
+
+		//LEFT PANEL-->Button Panel
 		addClass = new JButton ("Add Class");
 		addClass.addActionListener(new ButtonListener());
-		removeClass = new JButton ("Remove Class");
-		removeClass.addActionListener(new ButtonListener());
-		registeredList.add(addClass);
-		registeredList.add(removeClass);
-		leftPanel.add(registeredList);	
-		
-		
-		//LEFT PANEL-->Button Panel
-		save = new JButton ("Save Calendar");
-		save.addActionListener(new ButtonListener());
 		startOver = new JButton("Start Over");
 		startOver.addActionListener(new ButtonListener());
 		buttonPanel = new JPanel();
@@ -204,11 +187,11 @@ public class CalendarPanel extends JPanel{
 		buttonPanel.setPreferredSize(new Dimension((screenSize.width / 5), (screenSize.height /8)));
 		buttonPanel.setBackground(Color.gray);
 		buttonPanel.add(Box.createRigidArea(new Dimension(5,0)));
-		buttonPanel.add(save);
+		buttonPanel.add(addClass);
 		buttonPanel.add(Box.createRigidArea(new Dimension(5,0)));
 		buttonPanel.add(startOver);
 		leftPanel.add(buttonPanel);
-		
+
 		//CENTER PANEL
 		centerLabel = new JLabel("WINTER SEMESTER");
 		centerPanel = new JPanel();
@@ -216,16 +199,16 @@ public class CalendarPanel extends JPanel{
 		centerPanel.setBackground(Color.gray);
 		centerPanel.setLayout(new BoxLayout(centerPanel, BoxLayout.Y_AXIS));
 		centerPanel.add(centerLabel);
-		
+
 		//CENTER PANEL-->Calendar Panel
 		calendarPanel = new JPanel();
 		defaultColor = calendarPanel.getBackground();
 		calendarPanel.setLayout(new GridLayout(rows,columns));
 		calendar = new JPanel[rows][columns];
-		
-		
+
+
 		//creates calendar panels
-		for (int row = 0; row < rows; row++) 
+		for (int row = 0; row < rows; row++)
 			for (int col = 0; col < columns; col++) {
 				calendar[row][col] = new JPanel();
 				calendar[row][col].setBorder(BorderFactory.createEtchedBorder());
@@ -233,34 +216,34 @@ public class CalendarPanel extends JPanel{
 				if (row == 0 && col > 0 ){
 					calendar[row][col].add(new JLabel(days[col-1]));
 					calendar[row][col].setBackground(Color.LIGHT_GRAY);
-			    }
+				}
 				//sets labels and formats panels for time of day
 				if(row > 0 && col == 0){
 					tb = BorderFactory.createTitledBorder(time[row -1]);
 					calendar[row][col].setBorder(tb);
 					calendar[row][col].setBackground(Color.LIGHT_GRAY);
 				}
-				
+
 				//colors empty box in left corner of calendar
 				calendar[0][0].setBackground(Color.LIGHT_GRAY);
-				
-				calendarPanel.add(calendar[row][col]);					
+
+				calendarPanel.add(calendar[row][col]);
 			}
 		centerPanel.add(calendarPanel);
 		displayCalendar();
-				
-		//RIGHT PANEL 
+
+		//RIGHT PANEL
 		rightLabel = new JLabel ("Description of Course");
 		rightPanel = new JPanel();
 		rightPanel.setPreferredSize(new Dimension((screenSize.width / 5), screenSize.height));
 		rightPanel.setLayout(new BoxLayout(rightPanel, BoxLayout.Y_AXIS));
 		rightPanel.setBackground(Color.gray);
-		rightPanel.add(rightLabel);		
+		rightPanel.add(rightLabel);
 		rightPanel.add(Box.createRigidArea(new Dimension(0, 35)));
 		description = new JTextField("Course description goes here");
 		rightPanel.add(description);
-		
-		
+
+
 		//Overall CalendarPanel Layout
 		setPreferredSize(new Dimension(screenSize.width, screenSize.height));
 		setBackground(Color.gray);
@@ -268,15 +251,15 @@ public class CalendarPanel extends JPanel{
 		add(centerPanel, BorderLayout.CENTER);
 		add(rightPanel, BorderLayout.EAST);
 	}
-	
+
 	/*************************************************
-	* Displays GUI
-	************************************************/
+	 * Displays GUI
+	 ************************************************/
 	private void displayCalendar(){
 		iCalendar = cal.getCalendar();
 		for (int row = 0; row < this.rows; row++)
 			for (int col = 0; col < this.columns; col++) {
-				if (iCalendar[row][col] == Cell.EMPTY){ 	
+				if (iCalendar[row][col] == Cell.EMPTY){
 					calendar[row][col].setBorder(BorderFactory.createLoweredBevelBorder());
 				}
 				if (iCalendar[row][col] == Cell.TAKEN){
@@ -286,10 +269,10 @@ public class CalendarPanel extends JPanel{
 				}
 			}
 	}
-	
+
 	private void resetCalendar(){
-		for (int row = 0; row < rows; row++) 
-			for (int col = 0; col < columns; col++) 
+		for (int row = 0; row < rows; row++)
+			for (int col = 0; col < columns; col++)
 				if(row != 0 && col != 0){
 					calendar[row][col].setBackground(defaultColor);
 					calendar[row][col].removeAll();
@@ -300,25 +283,18 @@ public class CalendarPanel extends JPanel{
 		boolean checkCourse = false;
 		for(int i=0; i<cal.registeredCoursesSize(); i++)
 			if(cal.getCourse(i) == c)
-				checkCourse = true; 
+				checkCourse = true;
 		for(int i=0; i<cal.registeredSectionsSize(); i++)
 			if(cal.getSection(i) == s)
-				checkSection = true; 
+				checkSection = true;
 		if(checkSection == true && checkCourse == true)
 			return true;
 		return false;
 	}
-	
-	private boolean checkIfRegistered(Course c){
-		for(int i=0; i<cal.registeredCoursesSize(); i++)
-			if(cal.getCourse(i) == c)
-				return true;
-		return false;
-	}
-	
-	/*********************************************************** 
+
+	/***********************************************************
 	 * Represents a listener for button push events.
-	 * 
+	 *
 	 **********************************************************/
 	private class ButtonListener implements ActionListener{
 		private Component frame;
@@ -328,59 +304,39 @@ public class CalendarPanel extends JPanel{
 		//-------------------------------------------------------
 		public void actionPerformed (ActionEvent event){
 			Object e = event.getSource();
-		    //adds course
+			//adds course
 			if(addClass == e){
-			//Check if did not select section
-			if(listSec.getSelectedValue() == null)
-				JOptionPane.showMessageDialog(frame, "Must Select a Section.");
-			//Check if class is already registered
-			else if (checkIfRegistered(list.getSelectedValue()) == true)
-				JOptionPane.showMessageDialog(frame, "A Section for this Course is already registered.");
-			else if (checkIfRegistered(list.getSelectedValue(), listSec.getSelectedValue()) == false){
-				cal.addClass(list.getSelectedValue(), listSec.getSelectedValue());
+				//Check if did not select section
+				if(listSec.getSelectedValue() == null)
+					JOptionPane.showMessageDialog(frame, "Must Select a Section.");
+					//Check if class is already registered
+				else if (checkIfRegistered(list.getSelectedValue(), listSec.getSelectedValue()) == false)
+					cal.addClass(list.getSelectedValue(), listSec.getSelectedValue());
+				else
+					JOptionPane.showMessageDialog(frame, "Course and Section already registered.");
+				//displays added courses on GUI Calendar
 				for (int i = 0; i< y.size(); i++){
 					cal.select(x, y.get(i));
 					calendar[x][y.get(i)].removeAll();
 					calendar[x][y.get(i)].setBackground(Color.lightGray);
-					calendar[x][y.get(i)].add(new JLabel(courseText));
+					calendar[x][y.get(i)].add(new JLabel("Registered"));
 					calendar[x][y.get(i)].validate();
 				}
-			}
-			else
-				JOptionPane.showMessageDialog(frame, "Course and Section already registered.");
-			//displays added courses on GUI Calendar
-			
 //			displayCalendar();
 			}
-			if(removeClass == e){
-				cal.removeClass(list.getSelectedValue(), listSec.getSelectedValue());
-				for (int i = 0; i< y.size(); i++){
-					cal.unSelect(x, y.get(i));
-					calendar[x][y.get(i)].removeAll();
-					calendar[x][y.get(i)].setBackground(defaultColor);
-					calendar[x][y.get(i)].validate();
-				}
-			}
-			//resets GUI and CalendarModel
+			//TODO resets GUI and CalendarModel
 			if(startOver == e){
-				int reply = JOptionPane.showConfirmDialog(null, "Calendar will Reset. \nAre you sure you want to continue?", "", JOptionPane.YES_NO_OPTION);
-		        if (reply == JOptionPane.YES_OPTION) {
-//		        	displayCalendar();
-		            cal.reset();
-					resetCalendar();
-		        }
-
-//				JOptionPane.showMessageDialog(frame, "The Calendar will Reset. \nAre you sure you want to continue?");
-	
+				cal.reset();
+				resetCalendar();
+//				displayCalendar();
 			}
 		}
 	}
-	
+
 	private class SearchListener implements ActionListener{
 		public void actionPerformed(ActionEvent e){
-			
+
 			String input = search.getText();
-//			System.out.println(input);
 //			if(input.equals(c.getTitle())){
 //				searchCourse = new DefaultListModel<Course>();
 //				searchCourse.addElement(c);
@@ -389,12 +345,12 @@ public class CalendarPanel extends JPanel{
 		}
 	}
 	/*******************************************************
-	 *Represents a listener for list of courses 
-	 * 
+	 *Represents a listener for list of courses
+	 *
 	 ******************************************************/
 	private class CourseListener implements ListSelectionListener{
 		//-------------------------------------------------------
-		// 
+		// Sets Sections panel visible
 		//-------------------------------------------------------
 		public void valueChanged (ListSelectionEvent event){
 			description.setText(list.getSelectedValue().getDescription());
@@ -404,7 +360,6 @@ public class CalendarPanel extends JPanel{
 				secList.addElement(list.getSelectedValue().getSection(i));
 		}
 	}
-
 	private void cellAvailability(){
 		for (int i = 0; i< y.size(); i++){
 			if(iCalendar[x][y.get(i)] == Cell.EMPTY){
@@ -417,72 +372,28 @@ public class CalendarPanel extends JPanel{
 				calendar[x][y.get(i)].add(new JLabel("ALREADY TAKEN"));
 				calendar[x][y.get(i)].validate();
 			}
-		} 
-	}
-	
-	/*******************************************************
-	 *Represents a listener for web registered courses
-	 * 
-	 ******************************************************/
-	private class RegisteredListener implements ListSelectionListener{
-		//-------------------------------------------------------
-		// 
-		//-------------------------------------------------------
-		public void valueChanged (ListSelectionEvent event){
-//			for (int i=0; i<list.getSelectedValue().getSectionList().size(); i++)
-//				secList.addElement(list.getSelectedValue().getSection(i));
-			boolean color = false;
-			boolean cellInfo = false;
-			//checks to see if course is registered
-			for (int row = 0; row < rows; row++) 
-				for (int col = 0; col < columns; col++) 
-					if(calendar[row][col].getBackground() == Color.gray){
-						color = true;
-//						calendar[row][col].setBackground(Color.blue);
-//						calendar[row][col].removeAll();
-					}
-			//checks to see if calendar cell has same toString 
-//			for (int i=0; i<webRegistered.getSelectedValue().getSectionList().size(); i++)
-//			 webRegistered.getSelectedValue().getSection(i).toStringCell() == info of cell
 		}
 	}
-	
-		/******************************************************
-		 * Represents a listener for list of sections
-		 * 
-		 *****************************************************/
-		private class SectionListener implements ListSelectionListener{
-			int sec1 = 0;
-			int sec2 = 0;
+	/******************************************************
+	 * Represents a listener for list of sections
+	 *
+	 *****************************************************/
+	private class SectionListener implements ListSelectionListener{
+		int sec1 = 0;
+		int sec2 = 0;
 		//-------------------------------------------------------
 		// Displays available and taken cells on calendar
 		//-------------------------------------------------------
 		public void valueChanged (ListSelectionEvent event){
 			//to allow available cells colors to toggle on and off
 			if (secList.isEmpty() == false && listSec.isSelectionEmpty() == false){
-				WeeklySchedule meetD = new WeeklySchedule(listSec.getSelectedValue().getMeetings());
+				WeeklySchedule meetD = listSec.getSelectedValue().getMeetings();
 				//y-coordinates of cells
 				y = new ArrayList<Integer>();
 				//finds weekday meeting times and adds to y-coordinates
 				for (int i=0; i<5; i++){
 					if (meetD.day(i))
 						y.add(i+1);
-//				String text = listSec.getSelectedValue().getMeetings();
-//				String []meetD = text.split("");
-//				//y-coordinates of cells
-//				y = new ArrayList<Integer>();
-//				//finds weekday meeting times and adds to y-coordinates
-//				for (int i=0; i<meetD.length; i++){
-//					if (meetD[i].equals("M"))
-//						y.add(1);
-//					else if (meetD[i].equals("T"))
-//						y.add(2);
-//					else if (meetD[i].equals("W"))
-//						y.add(3);
-//					else if (meetD[i].equals("H"))
-//						y.add(4);
-//					else if (meetD[i].equals("F"))
-//						y.add(5);
 				}
 				x = 0;
 				//section start time
@@ -492,32 +403,31 @@ public class CalendarPanel extends JPanel{
 					if(start == i)
 						x = (i-700) /100;
 				//checks if cell with coordinates is available and changes background color
-			  courseText = listSec.getSelectedValue().toStringCell();
-			  if(!event.getValueIsAdjusting()){
-				if(sec1 == sec2){
-					cellAvailability();
+				if(!event.getValueIsAdjusting()){
+					if(sec1 == sec2){
+						cellAvailability();
 //					System.out.println("Count is: "+count);
 //					if (count == 2){
 						sec1 = listSec.getSelectedValue().getSID();
 //						count = 0;
 //					}
-				}else{
-					for (int row = 0; row < rows; row++) 
-						for (int col = 0; col < columns; col++) 
-							if(calendar[row][col].getBackground() == Color.green){
-								calendar[row][col].setBackground(defaultColor);
-								calendar[row][col].removeAll();
-							}
-							else if(calendar[row][col].getBackground() == Color.red){
-								calendar[row][col].removeAll();
-								calendar[row][col].setBackground(Color.lightGray);
-								calendar[row][col].add(new JLabel(courseText));
-								calendar[row][col].validate();
+					}else{
+						for (int row = 0; row < rows; row++)
+							for (int col = 0; col < columns; col++)
+								if(calendar[row][col].getBackground() == Color.green){
+									calendar[row][col].setBackground(defaultColor);
+									calendar[row][col].removeAll();
 								}
-						
-					cellAvailability();
+								else if(calendar[row][col].getBackground() == Color.red){
+									calendar[row][col].removeAll();
+									calendar[row][col].setBackground(Color.lightGray);
+									calendar[row][col].add(new JLabel("Registered"));
+									calendar[row][col].validate();
+								}
+
+						cellAvailability();
+					}
 				}
-			  }
 			}
 		}
 	}

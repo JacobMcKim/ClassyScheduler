@@ -118,6 +118,17 @@ public class ClassyHandlerTest {
         assertTrue(classy.getStudentSched().size() == 3);
 
         classy.logout();
-
     }
+
+    @Test
+    public void testAddSectionToSchedule() {
+
+        ClassyHandler classy = new ClassyHandler();
+
+        classy.login("drescherz@mail.gvsu.edu", "zackd");
+
+        assertTrue(classy.addSectionToSched(classy.getSearchBuffer().get(2).getSection(0)) >= 0);
+        classy.logout();
+    }
+
 }

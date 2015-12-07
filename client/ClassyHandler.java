@@ -30,6 +30,7 @@ public class ClassyHandler {
 
     private ArrayList<Course> searchBuffer;
     private ArrayList<Section> studentSched;
+    private int scheduleID;
     private ArrayList<Semester> semesters;
     private Semester currSem;
     private Student student;
@@ -162,6 +163,7 @@ public class ClassyHandler {
                     loadSemesters();
                     currSem = semesters.get(0);
                     loadDefaultSearchBuff();
+                    loadStudentSched();
                 } else{
                     // TODO: handle response failure
                 }
@@ -228,6 +230,7 @@ public class ClassyHandler {
                 if(s.equals("success")){
 
                     JSONObject schedTemp = data.getJSONObject("scheduleData");
+                    scheduleID = schedTemp.getInt("scheduleID");
                     JSONArray schedList =schedTemp.getJSONArray("classes");
 
                     for(int i = 0; i <schedList.length(); i++){
@@ -249,6 +252,7 @@ public class ClassyHandler {
                         Course course = new Course(dID,c,t,des);
 
                         int sID = sTemp.getInt("sectionID");
+                        int sCode = sTemp.getInt("sectionCode");
                         String p = sTemp.getString("profFirst") + " " +sTemp.getString("profLast");
 
                         String st = sTemp.getString("startTime");
@@ -262,13 +266,13 @@ public class ClassyHandler {
                         int o = sTemp.getInt("seatsOpen");
 
                         Section tSection = new Section(course, sID, stime, etime, meet);
+                        tSection.setSCode(sCode);
                         tSection.setRoom(r);
                         tSection.setSeats(seat);
                         tSection.setOpenSeats(o);
                         tSection.setProf(p);
 
                         studentSched.add(tSection);
-
                     }
                 }
             } catch (Exception e) {
@@ -292,8 +296,11 @@ public class ClassyHandler {
                 else if (s.getCourse().compare(studentSched.get(i).getCourse()))
                     return -1;
             }
-            studentSched.add(s);
-            return studentSched.size() - 1;
+            if(updateSchedule(s,"add")) {
+                studentSched.add(s);
+                return studentSched.size() - 1;
+            } else
+                return -1;
         } else
             return -1;
 
@@ -344,6 +351,41 @@ public class ClassyHandler {
 
             parseSearchBuffer(data);
         }
+    }
+
+    private boolean updateSchedule(Section s, String op) {
+
+        APICommunicator comm = new APICommunicator();
+        APIRequest req = new APIRequest(ServicesEnum.UPDATE_SCHEDULE);
+
+        JSONObject data;
+        APIResponse resp;
+
+        req.addRequestProperty("studentID", student.getStuID());
+        req.addRequestProperty("sessionID", sessionID);
+        req.addRequestProperty("scheduleID", scheduleID);
+        req.addRequestProperty("sectionCodeID",s.getsCode());
+        req.addRequestProperty("operation", op);
+
+        if(comm.sendRequest(req)) {
+
+            resp =  comm.getRequestResult();
+            data = resp.getResponseList();
+
+            try {
+                String r = data.getString("Response");
+
+                if (r.equals("success")) {
+                    return true;
+                } else {
+                    return false;
+                }
+            }catch (Exception e) {
+                System.out.println(e.getMessage());
+                return false;
+            }
+        }else
+            return false;
     }
 
     private void loadSemesters() {
@@ -430,6 +472,7 @@ public class ClassyHandler {
                         JSONObject sTemp = sList.getJSONObject(j);
 
                         int sID = Integer.parseInt(sTemp.getString("sectionID"));
+                        int sCode = sTemp.getInt("sectionCode");
 
                         String p = sTemp.getString("profFirst") + " " + sTemp.getString("profLast");
 
@@ -445,6 +488,7 @@ public class ClassyHandler {
 
                         //Create Section and add it to course's section list
                         Section tSection = new Section(tCourse, sID, stime, etime, meet);
+                        tSection.setSCode(sCode);
                         tSection.setRoom(r);
                         tSection.setSeats(s);
                         tSection.setOpenSeats(o);

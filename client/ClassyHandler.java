@@ -317,7 +317,7 @@ public class ClassyHandler {
         APIResponse resp;
         req.addRequestProperty("searchPhrase", "*");
         req.addRequestProperty("semesterID", currSem.getID());
-        req.addRequestProperty("sessionID", sessionID);
+        //req.addRequestProperty("sessionID", sessionID);
         req.addRequestProperty("studentID", student.getStuID());
 
 
@@ -341,7 +341,7 @@ public class ClassyHandler {
         APIResponse resp;
         req.addRequestProperty("searchPhrase", s);
         req.addRequestProperty("semesterID", currSem.getID());
-        req.addRequestProperty("sessionID", sessionID);
+        //req.addRequestProperty("sessionID", sessionID);
         req.addRequestProperty("studentID", student.getStuID());
 
 
@@ -396,7 +396,7 @@ public class ClassyHandler {
         JSONObject data;
         APIResponse resp;
 
-        req.addRequestProperty("sessionID", sessionID);
+        //req.addRequestProperty("sessionID", sessionID);
         req.addRequestProperty("studentID", student.getStuID());
 
 

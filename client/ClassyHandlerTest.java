@@ -39,17 +39,6 @@ public class ClassyHandlerTest {
     }
 
     @Test
-    public void testAddSectionToSched() throws Exception {
-
-        ClassyHandler classy = new ClassyHandler(1);
-        assertEquals(classy.addSectionToSched(classy.getSearchBuffer().get(0).getSection(1)), -1);
-        assertEquals(classy.addSectionToSched(classy.getSearchBuffer().get(1).getSection(0)), -1);
-        assertEquals(classy.addSectionToSched(classy.getSearchBuffer().get(1).getSection(1)), 1);
-
-
-    }
-
-    @Test
     public void testLoadDefaultSearchBuff() throws Exception {
 
         ClassyHandler classy = new ClassyHandler();

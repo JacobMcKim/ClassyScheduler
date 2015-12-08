@@ -11,8 +11,8 @@ public class WeeklyScheduleTest {
     public void testConstructor() throws Exception {
         String m = "m";
         String mwf = "mwf";
-        String th = "th";
-        String mtwhf = "MTWHf";
+        String th = "tr";
+        String mtwhf = "MTWrf";
 
         WeeklySchedule m1 = new WeeklySchedule(m);
         WeeklySchedule mwf1 = new WeeklySchedule(mwf);

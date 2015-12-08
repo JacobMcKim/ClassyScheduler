@@ -20,7 +20,5 @@ public class SemesterTest {
         assertFalse(s1.equals(s2));
         assertFalse(s1.equals(s3));
         assertFalse(s1.equals(s4));
-
-
     }
 }

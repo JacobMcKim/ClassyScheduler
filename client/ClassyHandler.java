@@ -42,8 +42,17 @@ public class ClassyHandler {
         searchBuffer = new ArrayList<Course>();
         studentSched = new ArrayList<Section>();
         semesters = new ArrayList<Semester>();
+    }
+
+    // Creates a handler that logs in with the given credentials
+    public ClassyHandler(String email, String password) {
 
 
+        searchBuffer = new ArrayList<Course>();
+        studentSched = new ArrayList<Section>();
+        semesters = new ArrayList<Semester>();
+
+        login(email, password);
     }
 
     // Creates a handler set for the current semester
@@ -137,7 +146,6 @@ public class ClassyHandler {
     }
 
     public void login(String email, String pass) {
-        // TODO: Login
 
         APICommunicator comm = new APICommunicator();
         APIRequest req = new APIRequest(ServicesEnum.LOGIN);

@@ -122,4 +122,12 @@ public class ClassyHandlerTest {
         classy.logout();
     }
 
+    @Test
+    public void testLoginConstructor() {
+
+        ClassyHandler classy = new ClassyHandler("drescherz@mail.gvsu.edu", "zackd");
+
+        classy.logout();
+    }
+
 }
